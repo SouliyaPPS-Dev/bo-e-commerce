@@ -4,8 +4,9 @@ import {
   CircularProgress,
   Theme,
   useMediaQuery,
+  Grid,
 } from '@mui/material';
-import { CSSProperties, useState } from 'react';
+import { useState } from 'react';
 
 import OrderPendingList from './OrderPendingList';
 import SellRevenueChart from './SellRevenueChart';
@@ -13,16 +14,6 @@ import StatusCountCards from './StatusCountCards';
 import { useRevenueData, useStaticDashboardData } from './useDashboardData';
 
 import { SellRevenue } from '../model/dashboard';
-
-const styles = {
-  flex: { display: 'flex' },
-  flexColumn: { display: 'flex', flexDirection: 'column' },
-  leftCol: { flex: 1, marginRight: '0.5em' },
-  rightCol: { flex: 1, marginLeft: '0.5em' },
-  singleCol: { marginTop: '1em', marginBottom: '1em' },
-};
-
-const VerticalSpacer = () => <span style={{ height: '1em' }} />;
 
 interface FilterParams {
   isYear: boolean;
@@ -33,9 +24,6 @@ interface FilterParams {
 }
 
 const Dashboard = () => {
-  const isXSmall = useMediaQuery((theme: Theme) =>
-    theme.breakpoints.down('sm')
-  );
   const isSmall = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
 
   const [filterParams, setFilterParams] = useState<FilterParams>({
@@ -112,101 +100,49 @@ const Dashboard = () => {
     );
   };
 
-  return isXSmall ? (
+  return (
     <Box sx={{ p: 2 }}>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <Grid container spacing={2}>
         {/* Status Section */}
         {statusCount && (
-          <StatusCountCards
-            sellRevenue={sumSellRevenue(sellRevenue || [])}
-            orderStatusCount={statusCount.orderStatusCount}
-            customerCount={statusCount.customerCount}
-            sellAmount={statusCount.sellAmount}
-          />
+          <Grid size={12}>
+            <StatusCountCards
+              sellRevenue={sumSellRevenue(sellRevenue || [])}
+              orderStatusCount={statusCount.orderStatusCount}
+              customerCount={statusCount.customerCount}
+              sellAmount={statusCount.sellAmount}
+            />
+          </Grid>
         )}
+
         {/* Sell Revenue Section */}
         {sellRevenue && (
-          <SellRevenueChart
-            data={sellRevenue}
-            onFilterChange={handleFilterChange}
-            loading={revenueLoading}
-            filterParams={filterParams}
-          />
+          <Grid
+            size={{
+              xs: 12,
+              md: isSmall ? 12 : 6
+            }}>
+            <SellRevenueChart
+              data={sellRevenue}
+              onFilterChange={handleFilterChange}
+              loading={revenueLoading}
+              filterParams={filterParams}
+            />
+          </Grid>
         )}
+
         {/* Order Pending List Section */}
-        {orderList && <OrderPendingList data={orderList} />}
-      </Box>
-    </Box>
-  ) : isSmall ? (
-    <div style={styles.flexColumn as CSSProperties}>
-      {/* Status Section */}
-      {statusCount && (
-        <div style={styles.singleCol}>
-          <StatusCountCards
-            sellRevenue={sumSellRevenue(sellRevenue || [])}
-            orderStatusCount={statusCount.orderStatusCount}
-            customerCount={statusCount.customerCount}
-            sellAmount={statusCount.sellAmount}
-          />
-        </div>
-      )}
-      {/* Sell Revenue Section */}
-      {sellRevenue && (
-        <div style={styles.singleCol}>
-          <div className='min-h-screen bg-gray-100 p-4'>
-            <div className='max-w-4xl mx-auto'>
-              <SellRevenueChart
-                data={sellRevenue}
-                onFilterChange={handleFilterChange}
-                loading={revenueLoading}
-              />
-            </div>
-          </div>
-        </div>
-      )}
-      {/* Order Pending List Section */}
-      {orderList && (
-        <div style={styles.singleCol}>
-          <OrderPendingList data={orderList} />
-        </div>
-      )}
-    </div>
-  ) : (
-    <>
-      <div style={styles.singleCol}>
-        {/* Status Section */}
-        {statusCount && (
-          <StatusCountCards
-            sellRevenue={sumSellRevenue(sellRevenue || [])}
-            orderStatusCount={statusCount.orderStatusCount}
-            customerCount={statusCount.customerCount}
-            sellAmount={statusCount.sellAmount}
-          />
+        {orderList && (
+          <Grid
+            size={{
+              xs: 12,
+              md: isSmall ? 12 : 6
+            }}>
+            <OrderPendingList data={orderList} />
+          </Grid>
         )}
-      </div>
-      <div style={styles.flex}>
-        <div style={styles.leftCol}>
-          {/* Sell Revenue Section */}
-          {sellRevenue && (
-            <div style={styles.singleCol}>
-              <SellRevenueChart
-                data={sellRevenue}
-                onFilterChange={handleFilterChange}
-                loading={revenueLoading}
-              />
-            </div>
-          )}
-        </div>
-        <div style={styles.rightCol}>
-          {/* Order Pending List Section */}
-          {orderList && (
-            <div style={styles.singleCol}>
-              <OrderPendingList data={orderList} />
-            </div>
-          )}
-        </div>
-      </div>
-    </>
+      </Grid>
+    </Box>
   );
 };
 

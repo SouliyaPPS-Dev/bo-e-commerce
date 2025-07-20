@@ -25,7 +25,7 @@ const LoginPage = () => {
   };
 
   return (
-    <Login>
+    <Login sx={{ backgroundImage: 'none', backgroundColor: '#FAF8F3' }}>
       <Container maxWidth="sm">
         <Paper elevation={3} sx={{ padding: 4, marginTop: 8, marginBottom: 8 }}>
           <Typography variant="h5" align="center" gutterBottom>
