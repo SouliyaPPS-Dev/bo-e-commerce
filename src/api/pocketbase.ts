@@ -6,6 +6,16 @@ pb.autoCancellation(false);
 
 export default pb;
 
+// Function to refresh the authentication token
+export const refreshAuthToken = async (): Promise<void> => {
+  try {
+    await pb.collection('users').authRefresh();
+  } catch (error) {
+    console.error('Failed to refresh auth token:', error);
+    // Optionally, handle token refresh failure (e.g., redirect to login)
+  }
+};
+
 // Generic function to fetch a single document from the collection
 export const fetchPocketbaseDocument = async <T extends Record<string, any>>(
   collection: string,

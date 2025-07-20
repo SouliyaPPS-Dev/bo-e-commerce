@@ -1,5 +1,5 @@
 import { AuthProvider } from 'react-admin';
-import pb from './api/pocketbase'; // Import PocketBase instance
+import pb, { refreshAuthToken } from './api/pocketbase'; // Import PocketBase instance and refreshAuthToken
 
 const authProvider: AuthProvider = {
   login: async ({
@@ -31,9 +31,30 @@ const authProvider: AuthProvider = {
   },
   logout: () => {
     localStorage.removeItem('username');
+    localStorage.removeItem('avatar');
+    localStorage.removeItem('id');
+    localStorage.removeItem('role');
+    pb.authStore.clear(); // Clear PocketBase auth store
     return Promise.resolve();
   },
-  checkError: () => Promise.resolve(),
+  checkError: async ({ status }: { status: number }) => {
+    if (status === 401 || status === 403) {
+      try {
+        await refreshAuthToken();
+        // If refresh is successful, token is renewed, so resolve the error
+        return Promise.resolve();
+      } catch (error) {
+        // If refresh fails, then log out
+        localStorage.removeItem('username');
+        localStorage.removeItem('avatar');
+        localStorage.removeItem('id');
+        localStorage.removeItem('role');
+        pb.authStore.clear(); // Clear PocketBase auth store
+        return Promise.reject();
+      }
+    }
+    return Promise.resolve();
+  },
   checkAuth: () =>
     localStorage.getItem('username') ? Promise.resolve() : Promise.reject(),
   getPermissions: () => Promise.resolve(),
