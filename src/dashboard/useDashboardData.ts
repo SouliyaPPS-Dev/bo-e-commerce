@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import pb from '../api/pocketbase';
+import { pbHttpClient } from '../utils/pbHttpClient';
 
 interface SellRevenueData {
   period: string;
@@ -81,14 +82,14 @@ export const useStaticDashboardData = () => {
         setData((prev) => ({ ...prev, loading: true, error: null }));
 
         const [statusCountResponse, orderListResponse] = await Promise.all([
-          pb.send('/dashboard/status-count', {
+          pbHttpClient('/dashboard/status-count', {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${pb.authStore.token}`,
             },
           }),
-          pb.send('/order-list?page=1&perPage=10&status=pending', {
+          pbHttpClient('/order-list?page=1&perPage=10&status=pending', {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -154,7 +155,7 @@ export const useRevenueData = (filterParams?: FilterParams) => {
         const sellRevenueUrl = `/dashboard/sell-revenue${sellRevenueParams.toString() ? `?${sellRevenueParams.toString()}` : ''
           }`;
 
-        const sellRevenueResponse = await pb.send(sellRevenueUrl, {
+        const sellRevenueResponse = await pbHttpClient(sellRevenueUrl, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
