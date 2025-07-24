@@ -1,13 +1,22 @@
 import { localStorageData } from "./cache";
 
 export const formatCurrency = (value: number, locale = 'en-US') => {
-  const roundedValue = value % 1 >= 0.5 ? Math.ceil(value) : Math.floor(value);
-  return new Intl.NumberFormat(locale, {
+  const formattedValue = new Intl.NumberFormat(locale, {
     style: 'decimal',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(roundedValue);
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value);
+
+  // if the value has more than 2 decimal places, remove the extra decimal places
+  const [integerPart, decimalPart] = formattedValue.split('.');
+  if (decimalPart && decimalPart.length > 2) {
+    const roundedDecimalPart = Number(`0.${decimalPart}`).toFixed(2).slice(2);
+    return `${integerPart}.${roundedDecimalPart}`;
+  }
+
+  return formattedValue;
 };
+
 export const formattedDate = (date: string) => {
   const options: Intl.DateTimeFormatOptions = {
     year: 'numeric',

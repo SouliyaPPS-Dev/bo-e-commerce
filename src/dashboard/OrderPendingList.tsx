@@ -260,11 +260,17 @@ const OrderPendingRow: React.FC<{
         <Box>
           <Typography variant='body2' fontWeight='medium'>
             {currency === 'USD' && order?.amountUSD
-              ? `${formatCurrency(Number(order?.amountUSD))} $`
+              ? `${formatCurrency(
+                  Number(order?.amountUSD) * order?.quantity
+                )} $`
               : currency === 'THB' && order?.amountTHB
-              ? `${formatCurrency(Number(order?.amountTHB))} ฿`
+              ? `${formatCurrency(
+                  Number(order?.amountTHB) * order?.quantity
+                )} ฿`
               : currency === 'LAK' && order?.amountLAK
-              ? `${formatCurrency(Number(order?.amountLAK))} ₭`
+              ? `${formatCurrency(
+                  Number(order?.amountLAK) * order?.quantity
+                )} ₭`
               : ''}
           </Typography>
         </Box>
