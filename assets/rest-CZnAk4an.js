@@ -1,2 +1,0 @@
-var c=Object.defineProperty;var e=(r,t)=>c(r,"name",{value:t,configurable:!0});import{s as n,f as a,a as h}from"./index-DktP07R0.js";var i={};const p=e(async(r,t={})=>{try{return await a(r,t)}catch(s){if(s.status===401)try{return await h.checkError({status:401}),await a(r,t)}catch{throw s}throw s}},"httpClient"),u=n(i.REACT_APP_API_BASE_URL||"http://localhost:4000",p);export{u as default};
-//# sourceMappingURL=rest-CZnAk4an.js.map
