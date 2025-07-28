@@ -5,7 +5,6 @@ import {
   Person,
   Receipt,
 } from '@mui/icons-material';
-import WhatsAppIcon from '../components/icons/WhatsAppIcon';
 import {
   Alert,
   Box,
@@ -43,6 +42,7 @@ import { Fragment, useCallback, useEffect, useState } from 'react';
 import { DateField, Loading, useTranslate } from 'react-admin';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import * as XLSX from 'xlsx';
+import WhatsAppIcon from '../components/icons/WhatsAppIcon';
 
 import pb from '../api/pocketbase';
 import { useCurrencyContext } from '../components/CurrencySelector/CurrencyProvider'; // Import useCurrencyContext
@@ -1076,13 +1076,16 @@ const OrdersTable = React.memo(
               const product = orderDetails.products[item.product_id];
               if (product) {
                 const newSellCount = (product.sell_count || 0) + item.quantity;
-                const newTotalCount =
-                  (product.total_count || 0) - item.quantity;
-
-                await pb.collection('products').update(product.id, {
-                  sell_count: newSellCount,
-                  total_count: newTotalCount,
-                });
+                try {
+                  await pb.collection('products').update(product.id, {
+                    sell_count: newSellCount,
+                  });
+                } catch (updateError) {
+                  console.error(
+                    `Failed to update product ${product.id}:`,
+                    updateError
+                  );
+                }
               }
             }
           }
