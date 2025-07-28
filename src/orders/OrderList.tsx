@@ -5,6 +5,7 @@ import {
   Person,
   Receipt,
 } from '@mui/icons-material';
+import WhatsAppIcon from '../components/icons/WhatsAppIcon';
 import {
   Alert,
   Box,
@@ -446,7 +447,25 @@ const OrderDetail: React.FC<{
         </TableCell>
         <TableCell>{order.reference_id}</TableCell>
         <TableCell>{order.customer_name}</TableCell>
-        <TableCell>{order.phone_number}</TableCell>
+        <TableCell>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {order.phone_number}
+            {order.phone_number && (
+              <IconButton
+                size='small'
+                href={`https://wa.me/${order.phone_number.replace(
+                  /[^\d+]/g,
+                  ''
+                )}`}
+                target='_blank'
+                rel='noopener noreferrer'
+                sx={{ color: '#25D366' }} // WhatsApp green color
+              >
+                <WhatsAppIcon width={20} height={20} />
+              </IconButton>
+            )}
+          </Box>
+        </TableCell>
         <TableCell>{order.address}</TableCell>
         <TableCell>
           <FormControl size='small' variant='outlined'>
@@ -582,6 +601,21 @@ const OrderDetail: React.FC<{
                               >
                                 <strong>{translate('phone_number')}:</strong>{' '}
                                 {details.customer.phone_number}
+                                &nbsp;
+                                {details.customer.phone_number && (
+                                  <IconButton
+                                    size='small'
+                                    href={`https://wa.me/${details.customer.phone_number.replace(
+                                      /[^\d+]/g,
+                                      ''
+                                    )}`}
+                                    target='_blank'
+                                    rel='noopener noreferrer'
+                                    sx={{ color: '#25D366' }} // WhatsApp green color
+                                  >
+                                    <WhatsAppIcon width={20} height={20} />
+                                  </IconButton>
+                                )}
                               </Typography>
                               <Typography
                                 variant='body2'
@@ -1042,7 +1076,8 @@ const OrdersTable = React.memo(
               const product = orderDetails.products[item.product_id];
               if (product) {
                 const newSellCount = (product.sell_count || 0) + item.quantity;
-                const newTotalCount = (product.total_count || 0) - item.quantity;
+                const newTotalCount =
+                  (product.total_count || 0) - item.quantity;
 
                 await pb.collection('products').update(product.id, {
                   sell_count: newSellCount,
