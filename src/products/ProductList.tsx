@@ -240,7 +240,7 @@ const ProductCard = () => {
 
         <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
           <Typography variant='caption' color='textSecondary'>
-            {translate('total_count')}: {record.total_count || 0}
+            {translate('total_count')}: {record.total_count - record.sell_count || 0}
           </Typography>
           <Typography variant='caption' color='textSecondary'>
             {translate('sell_count')}: {record.sell_count || 0}

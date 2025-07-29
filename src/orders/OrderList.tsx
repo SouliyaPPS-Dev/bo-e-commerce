@@ -758,7 +758,10 @@ const OrderDetail: React.FC<{
                                           {formatCurrency(total, currency)}
                                         </TableCell>
                                         <TableCell align='right'>
-                                          {product?.total_count}
+                                          {order.status !== 'pending'
+                                            ? product?.total_count -
+                                              product?.sell_count
+                                            : product?.total_count}
                                         </TableCell>
                                         <TableCell align='right'>
                                           {product?.sell_count}
@@ -1069,7 +1072,7 @@ const OrdersTable = React.memo(
       try {
         await pb.collection('orders').update(orderId, { status: newStatus });
 
-        if (newStatus === 'completed') {
+        if (newStatus === 'completed' || newStatus === 'purchased') {
           const orderDetails = detailsCache[orderId];
           if (orderDetails && orderDetails.orderItems) {
             for (const item of orderDetails.orderItems) {
