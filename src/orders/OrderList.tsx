@@ -487,36 +487,44 @@ const OrderDetail: React.FC<{
                 },
               }}
             >
-              <MenuItem
-                value={'pending'}
-                sx={{ color: getStatusColor('pending') }}
-              >
-                {translate('pending')}
-              </MenuItem>
+              {order.status === 'pending' && (
+                <MenuItem
+                  value={'pending'}
+                  sx={{ color: getStatusColor('pending') }}
+                  disabled={order.status !== 'pending'}
+                >
+                  {translate('pending')}
+                </MenuItem>
+              )}
               <MenuItem
                 value={'purchased'}
                 sx={{ color: getStatusColor('purchased') }}
               >
                 {translate('purchased')}
               </MenuItem>
-              <MenuItem
-                value={'delivering'}
-                sx={{ color: getStatusColor('delivering') }}
-              >
-                {translate('delivering')}
-              </MenuItem>
-              <MenuItem
-                value={'completed'}
-                sx={{ color: getStatusColor('completed') }}
-              >
-                {translate('completed')}
-              </MenuItem>
-              <MenuItem
-                value={'cancel'}
-                sx={{ color: getStatusColor('cancel') }}
-              >
-                {translate('cancel')}
-              </MenuItem>
+              {order.status !== 'pending' && [
+                <MenuItem
+                  key='delivering'
+                  value={'delivering'}
+                  sx={{ color: getStatusColor('delivering') }}
+                >
+                  {translate('delivering')}
+                </MenuItem>,
+                <MenuItem
+                  key='completed'
+                  value={'completed'}
+                  sx={{ color: getStatusColor('completed') }}
+                >
+                  {translate('completed')}
+                </MenuItem>,
+                <MenuItem
+                  key='cancel'
+                  value={'cancel'}
+                  sx={{ color: getStatusColor('cancel') }}
+                >
+                  {translate('cancel')}
+                </MenuItem>,
+              ]}
             </Select>
           </FormControl>
         </TableCell>
@@ -972,142 +980,147 @@ const OrdersTable = React.memo(
       fetchOrders();
     }, [fetchOrders, page, rowsPerPage, dateRange]);
 
-    const fetchOrderDetails = async (orderId: string) => {
-      if (detailsCache[orderId] && detailsCache[orderId].customer) return;
+    const fetchOrderDetails = useCallback(
+      async (orderId: string) => {
+        if (detailsCache[orderId] && detailsCache[orderId].customer) return;
 
-      try {
-        const order = orders.find((o) => o.id === orderId);
-        let customer: PBCustomer | null = null;
-        if (order && order.customer_id) {
-          try {
-            customer = (await pb
-              .collection('customers')
-              .getOne(order.customer_id)) as PBCustomer;
-          } catch (err) {
-            console.warn('Failed to fetch customer:', err);
-          }
-        }
-
-        let address: PBAddress | null = null;
-        let provinceName: string | null = null;
-        let districtName: string | null = null;
-        if (order && order.address_id) {
-          try {
-            address = (await pb
-              .collection('addresses')
-              .getOne(order.address_id)) as PBAddress;
-            if (address.province_id) {
-              try {
-                const provinceData = await pb
-                  .collection('provinces')
-                  .getOne(address.province_id);
-                provinceName = provinceData.name;
-              } catch (err) {
-                console.warn('Failed to fetch province:', err);
-              }
+        try {
+          const order = orders.find((o) => o.id === orderId);
+          let customer: PBCustomer | null = null;
+          if (order && order.customer_id) {
+            try {
+              customer = (await pb
+                .collection('customers')
+                .getOne(order.customer_id)) as PBCustomer;
+            } catch (err) {
+              console.warn('Failed to fetch customer:', err);
             }
-            if (address.district_id) {
-              try {
-                const districtData = await pb
-                  .collection('districts')
-                  .getOne(address.district_id);
-                districtName = districtData.name;
-              } catch (err) {
-                console.warn('Failed to fetch district:', err);
+          }
+
+          let address: PBAddress | null = null;
+          let provinceName: string | null = null;
+          let districtName: string | null = null;
+          if (order && order.address_id) {
+            try {
+              address = (await pb
+                .collection('addresses')
+                .getOne(order.address_id)) as PBAddress;
+              if (address.province_id) {
+                try {
+                  const provinceData = await pb
+                    .collection('provinces')
+                    .getOne(address.province_id);
+                  provinceName = provinceData.name;
+                } catch (err) {
+                  console.warn('Failed to fetch province:', err);
+                }
               }
+              if (address.district_id) {
+                try {
+                  const districtData = await pb
+                    .collection('districts')
+                    .getOne(address.district_id);
+                  districtName = districtData.name;
+                } catch (err) {
+                  console.warn('Failed to fetch district:', err);
+                }
+              }
+            } catch (err) {
+              console.warn('Failed to fetch address:', err);
             }
-          } catch (err) {
-            console.warn('Failed to fetch address:', err);
           }
+
+          const productIds = detailsCache[orderId].orderItems.map(
+            (item) => item.product_id
+          );
+          const uniqueProductIds = Array.from(new Set(productIds));
+          const productPromises = uniqueProductIds.map(async (productId) => {
+            try {
+              const productData = await pb
+                .collection('products')
+                .getOne(productId);
+              return {
+                id: productId,
+                data: productData as unknown as PBProduct,
+              };
+            } catch (err) {
+              console.warn(`Failed to fetch product ${productId}:`, err);
+              return null;
+            }
+          });
+          const productResults = await Promise.all(productPromises);
+          const products: { [key: string]: PBProduct } = {};
+          productResults.forEach((result) => {
+            if (result) {
+              products[result.id] = result.data;
+            }
+          });
+
+          setDetailsCache((prev) => ({
+            ...prev,
+            [orderId]: {
+              ...prev[orderId],
+              customer,
+              address,
+              products,
+              provinceName,
+              districtName,
+            },
+          }));
+        } catch (err) {
+          console.error('Error fetching order details:', err);
         }
-
-        const productIds = detailsCache[orderId].orderItems.map(
-          (item) => item.product_id
-        );
-        const uniqueProductIds = Array.from(new Set(productIds));
-        const productPromises = uniqueProductIds.map(async (productId) => {
-          try {
-            const productData = await pb
-              .collection('products')
-              .getOne(productId);
-            return { id: productId, data: productData as unknown as PBProduct };
-          } catch (err) {
-            console.warn(`Failed to fetch product ${productId}:`, err);
-            return null;
-          }
-        });
-        const productResults = await Promise.all(productPromises);
-        const products: { [key: string]: PBProduct } = {};
-        productResults.forEach((result) => {
-          if (result) {
-            products[result.id] = result.data;
-          }
-        });
-
-        setDetailsCache((prev) => ({
-          ...prev,
-          [orderId]: {
-            ...prev[orderId],
-            customer,
-            address,
-            products,
-            provinceName,
-            districtName,
-          },
-        }));
-      } catch (err) {
-        console.error('Error fetching order details:', err);
-      }
-    };
+      },
+      [orders, detailsCache]
+    );
 
     const handleToggle = (orderId: string) => {
       const newOpenOrderId = openOrderId === orderId ? null : orderId;
       setOpenOrderId(newOpenOrderId);
-      if (newOpenOrderId) {
-        fetchOrderDetails(newOpenOrderId);
-      }
     };
+
+    useEffect(() => {
+      if (openOrderId) {
+        fetchOrderDetails(openOrderId);
+      }
+    }, [openOrderId, fetchOrderDetails]);
 
     const handleStatusChange = async (orderId: string, newStatus: string) => {
       try {
+        // First, update the order status
         await pb.collection('orders').update(orderId, { status: newStatus });
 
-        if (newStatus === 'completed' || newStatus === 'purchased') {
-          const orderDetails = detailsCache[orderId];
-          if (orderDetails && orderDetails.orderItems) {
-            for (const item of orderDetails.orderItems) {
-              const product = orderDetails.products[item.product_id];
-              if (product) {
-                const newSellCount = (product.sell_count || 0) + item.quantity;
-                try {
-                  await pb.collection('products').update(product.id, {
-                    sell_count: newSellCount,
-                  });
-                } catch (updateError) {
-                  console.error(
-                    `Failed to update product ${product.id}:`,
-                    updateError
-                  );
-                }
-              }
+        // If the order is marked as completed or purchased, update product sell_counts
+        if (newStatus === 'purchased') {
+          // Fetch the items associated with this order
+          const orderItems = await pb.collection('order_items').getFullList({
+            filter: `order_id = "${orderId}"`,
+          });
+
+          // For each item, fetch the product and update its sell_count
+          for (const item of orderItems) {
+            try {
+              const product = await pb
+                .collection('products')
+                .getOne(item.product_id);
+              const newSellCount = (product.sell_count || 0) + item.quantity;
+              await pb
+                .collection('products')
+                .update(item.product_id, { sell_count: newSellCount });
+            } catch (productError) {
+              console.error(
+                `Failed to update product count for product ${item.product_id}:`,
+                productError
+              );
+              // Continue to the next item even if one fails
             }
           }
         }
-        // Optimistically update the UI
-        setOrders((prevOrders) =>
-          prevOrders.map((order) =>
-            order.id === orderId
-              ? { ...order, status: newStatus as PBOrder['status'] }
-              : order
-          )
-        );
 
-        // If the order is currently expanded, re-fetch its details to update totals/items
-        if (openOrderId === orderId) {
-          await fetchOrderDetails(orderId);
-        }
+        // Close any open detail view to prevent inconsistent state on tab switch
+        setOpenOrderId(null);
 
-        // Re-fetch orders to ensure counts are updated and order moves to correct tab
+        // Refresh the orders list and tab counts to reflect the changes
         fetchOrders();
         fetchOrderCounts();
       } catch (error) {
