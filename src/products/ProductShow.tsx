@@ -97,7 +97,9 @@ const ProductImage = () => {
           <CardMedia
             component='img'
             image={imageUrl}
-            alt={`${record.name || translate('product')} ${translate('image')} ${index + 1}`}
+            alt={`${record.name || translate('product')} ${translate(
+              'image'
+            )} ${index + 1}`}
             sx={{
               width: '100%',
               height: 'auto',
@@ -195,7 +197,7 @@ const ProductShow = () => {
                   </ReferenceField>
                 </Box>
 
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                {/* <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                   <Inventory color='primary' sx={{ mr: 1 }} />
                   <Typography
                     variant='h6'
@@ -205,12 +207,13 @@ const ProductShow = () => {
                   </Typography>
                   <NumberField
                     source='total_count'
+                    resource='products'
                     sx={{
                       fontSize: '1rem',
                       fontWeight: 600,
                     }}
                   />
-                </Box>
+                </Box> */}
 
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                   <AttachMoney color='primary' sx={{ mr: 1 }} />
