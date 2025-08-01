@@ -1086,46 +1086,104 @@ const OrdersTable = React.memo(
     }, [openOrderId, fetchOrderDetails]);
 
     const handleStatusChange = async (orderId: string, newStatus: string) => {
-      try {
-        // First, update the order status
-        await pb.collection('orders').update(orderId, { status: newStatus });
+      const order = orders.find((o) => o.id === orderId);
+      if (!order) {
+        alert('Order not found!');
+        return;
+      }
+      const oldStatus = order.status;
 
-        // If the order is marked as completed or purchased, update product sell_counts
-        if (newStatus === 'purchased') {
-          // Fetch the items associated with this order
+      // Prevent no change
+      if (oldStatus === newStatus) {
+        return;
+      }
+
+      try {
+        // Logic for updating sell_count based on status change
+        if (newStatus === 'purchased' && oldStatus !== 'purchased') {
           const orderItems = await pb.collection('order_items').getFullList({
             filter: `order_id = "${orderId}"`,
           });
 
-          // For each item, fetch the product and update its sell_count
+          // Check stock for all items first
+          for (const item of orderItems) {
+            const product = await pb
+              .collection('products')
+              .getOne(item.product_id);
+            if (
+              product.total_count <
+              (product.sell_count || 0) + item.quantity
+            ) {
+              alert(
+                `Not enough stock for product ${product.name}. Available: ${
+                  product.total_count - (product.sell_count || 0)
+                }, Required: ${item.quantity}`
+              );
+              return; // Abort status change
+            }
+          }
+
+          // All products have enough stock, proceed to update sell_counts
+          for (const item of orderItems) {
+            const product = await pb
+              .collection('products')
+              .getOne(item.product_id);
+            const newSellCount = (product.sell_count || 0) + item.quantity;
+            await pb
+              .collection('products')
+              .update(item.product_id, { sell_count: newSellCount });
+          }
+        } else if (
+          newStatus === 'cancel' &&
+          ['purchased', 'delivering', 'completed'].includes(oldStatus)
+        ) {
+          const orderItems = await pb.collection('order_items').getFullList({
+            filter: `order_id = "${orderId}"`,
+          });
+
           for (const item of orderItems) {
             try {
               const product = await pb
                 .collection('products')
                 .getOne(item.product_id);
-              const newSellCount = (product.sell_count || 0) + item.quantity;
+              const newSellCount = (product.sell_count || 0) - item.quantity;
               await pb
                 .collection('products')
-                .update(item.product_id, { sell_count: newSellCount });
+                .update(item.product_id, {
+                  sell_count: Math.max(0, newSellCount),
+                });
             } catch (productError) {
               console.error(
-                `Failed to update product count for product ${item.product_id}:`,
+                `Failed to revert product count for product ${item.product_id}:`,
                 productError
               );
-              // Continue to the next item even if one fails
             }
           }
         }
 
-        // Close any open detail view to prevent inconsistent state on tab switch
-        setOpenOrderId(null);
+        // Finally, update the order status
+        await pb.collection('orders').update(orderId, { status: newStatus });
 
-        // Refresh the orders list and tab counts to reflect the changes
+        setOpenOrderId(null);
         fetchOrders();
         fetchOrderCounts();
       } catch (error) {
         console.error('Error updating order status:', error);
-        alert('Failed to update order status.');
+        // Check if the error is a PocketBase error and has a response
+        if (error && typeof error === 'object' && 'response' in error) {
+          const pbError = error as {
+            response: { status: number; data: any };
+          };
+          if (pbError.response && pbError.response.status === 400) {
+            alert(
+              'Failed to update order status: Invalid data. Please check stock levels and try again.'
+            );
+          } else {
+            alert('Failed to update order status.');
+          }
+        } else {
+          alert('An unknown error occurred while updating order status.');
+        }
       }
     };
 
