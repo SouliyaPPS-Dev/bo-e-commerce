@@ -517,14 +517,15 @@ const OrderDetail: React.FC<{
                 >
                   {translate('completed')}
                 </MenuItem>,
-                <MenuItem
-                  key='cancel'
-                  value={'cancel'}
-                  sx={{ color: getStatusColor('cancel') }}
-                >
-                  {translate('cancel')}
-                </MenuItem>,
               ]}
+              <MenuItem
+                key='cancel'
+                value={'cancel'}
+                sx={{ color: getStatusColor('cancel') }}
+              >
+                {translate('cancel')}
+              </MenuItem>
+              ,
             </Select>
           </FormControl>
         </TableCell>
@@ -1147,11 +1148,9 @@ const OrdersTable = React.memo(
                 .collection('products')
                 .getOne(item.product_id);
               const newSellCount = (product.sell_count || 0) - item.quantity;
-              await pb
-                .collection('products')
-                .update(item.product_id, {
-                  sell_count: Math.max(0, newSellCount),
-                });
+              await pb.collection('products').update(item.product_id, {
+                sell_count: Math.max(0, newSellCount),
+              });
             } catch (productError) {
               console.error(
                 `Failed to revert product count for product ${item.product_id}:`,
