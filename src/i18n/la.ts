@@ -90,7 +90,8 @@ const customLaoMessages: TranslationMessages = {
   change_password: 'ປ່ຽນລະຫັດຜ່ານ',
   old_password: 'ລະຫັດຜ່ານເກົ່າ',
   old_password_helper: 'ກະລຸນາປ່ຽນລະຫັດຜ່ານ',
-  password_length_helper_edit: 'ປ່ອຍຫວ່າງໄວ້ເພື່ອຮັກສາລະຫັດຜ່ານປັດຈຸບັນ. ຕ້ອງມີຢ່າງໜ້ອຍ 6 ຕົວອັກສອນ.',
+  password_length_helper_edit:
+    'ປ່ອຍຫວ່າງໄວ້ເພື່ອຮັກສາລະຫັດຜ່ານປັດຈຸບັນ. ຕ້ອງມີຢ່າງໜ້ອຍ 6 ຕົວອັກສອນ.',
   details: 'ລາຍລະອຽດ',
   fields: {
     basket: {
@@ -190,7 +191,7 @@ const customLaoMessages: TranslationMessages = {
   loading_categories: 'ກຳລັງໂຫຼດໝວດໝູ່...',
   categories: 'ໝວດໝູ່',
   updated: 'ອັບເດດແລ້ວ',
-  total_count: 'ຈໍານວນທີ່ຍັງມີ',
+  total_count: 'ຍັງເຫຼືອ',
   sell_count: 'ຈໍານວນຂາຍແລ້ວ',
   product_information: 'ຂໍ້ມູນສິນຄ້າ',
   description: 'ລາຍລະອຽດ',
@@ -267,8 +268,7 @@ const customLaoMessages: TranslationMessages = {
         delete: 'ລຶບລູກຄ້າ',
       },
       errors: {
-        password_mismatch:
-          'ການຢືນຢັນລະຫັດຜ່ານບໍ່ກົງກັນກັບລະຫັດຜ່ານ.',
+        password_mismatch: 'ການຢືນຢັນລະຫັດຜ່ານບໍ່ກົງກັນກັບລະຫັດຜ່ານ.',
       },
       notifications: {
         created: 'ລູກຄ້າຖືກສ້າງ |||| %{smart_count} ລູກຄ້າຖືກສ້າງ',
@@ -348,13 +348,16 @@ const customLaoMessages: TranslationMessages = {
       },
     },
     user_verified_status_updated: 'ຜູ້ໃຊ້ %{status} ສຳເລັດແລ້ວ',
-    error_updating_verification_status: 'ເກີດຂໍ້ຜິດພາດໃນການອັບເດດສະຖານະການຢືນຢັນ',
+    error_updating_verification_status:
+      'ເກີດຂໍ້ຜິດພາດໃນການອັບເດດສະຖານະການຢືນຢັນ',
     reset_password: 'ຕັ້ງລະຫັດຜ່ານໃໝ່',
     user_email_not_found: 'ບໍ່ພົບອີເມວຜູ້ໃຊ້',
     password_reset_email_sent: 'ອີເມວຕັ້ງລະຫັດຜ່ານໃໝ່ຖືກສົ່ງໄປທີ່ %{email}',
-    failed_to_send_password_reset_email: 'ລົ້ມເຫຼວໃນການສົ່ງອີເມວຕັ້ງລະຫັດຜ່ານໃໝ່ໄປທີ່ %{email}',
+    failed_to_send_password_reset_email:
+      'ລົ້ມເຫຼວໃນການສົ່ງອີເມວຕັ້ງລະຫັດຜ່ານໃໝ່ໄປທີ່ %{email}',
     reset: 'ຕັ້ງຄ່າໃໝ່',
-    confirm_password_reset: 'ທ່ານແນ່ໃຈບໍວ່າຕ້ອງການສົ່ງອີເມວຕັ້ງລະຫັດຜ່ານໃໝ່ໄປທີ່ %{email}?',
+    confirm_password_reset:
+      'ທ່ານແນ່ໃຈບໍວ່າຕ້ອງການສົ່ງອີເມວຕັ້ງລະຫັດຜ່ານໃໝ່ໄປທີ່ %{email}?',
     username_required: 'ຊື່ຜູ້ໃຊ້ແມ່ນຈຳເປັນ',
     email_required: 'ອີເມວແມ່ນຈຳເປັນ',
     full_name_required: 'ຊື່ເຕັມແມ່ນຈຳເປັນ',
@@ -454,7 +457,8 @@ const customLaoMessages: TranslationMessages = {
         deleted: 'ໂປສເຕີຖືກລຶບ |||| %{smart_count} ໂປສເຕີຖືກລຶບ',
       },
       errors: {
-        total_count_less_than_sell_count: 'ຈຳນວນທັງໝົດບໍ່ສາມາດໜ້ອຍກວ່າຈຳນວນທີ່ຂາຍໄດ້',
+        total_count_less_than_sell_count:
+          'ຈຳນວນທັງໝົດບໍ່ສາມາດໜ້ອຍກວ່າຈຳນວນທີ່ຂາຍໄດ້',
       },
     },
     categories: {
