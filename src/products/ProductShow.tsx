@@ -17,6 +17,7 @@ import {
 } from '@mui/material';
 import {
   DateField,
+  FunctionField,
   NumberField,
   ReferenceField,
   RichTextField,
@@ -197,7 +198,7 @@ const ProductShow = () => {
                   </ReferenceField>
                 </Box>
 
-                {/* <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                   <Inventory color='primary' sx={{ mr: 1 }} />
                   <Typography
                     variant='h6'
@@ -205,15 +206,16 @@ const ProductShow = () => {
                   >
                     {translate('total_count')}:
                   </Typography>
-                  <NumberField
-                    source='total_count'
-                    resource='products'
+                  <FunctionField
+                    render={(record: any) =>
+                      record.total_count - record.sell_count
+                    }
                     sx={{
                       fontSize: '1rem',
                       fontWeight: 600,
                     }}
                   />
-                </Box> */}
+                </Box>
 
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                   <AttachMoney color='primary' sx={{ mr: 1 }} />
