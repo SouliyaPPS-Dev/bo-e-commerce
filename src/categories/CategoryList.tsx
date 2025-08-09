@@ -19,6 +19,7 @@ import {
   TopToolbar,
   useDefaultTitle,
   useListContext,
+  useLocaleState,
   useRedirect,
   useRefresh, // Import TopToolbar for common action bar layout
   useTranslate,
@@ -76,6 +77,7 @@ const CategoryGrid = () => {
   const redirect = useRedirect();
   const refresh = useRefresh();
   const translate = useTranslate();
+  const [locale] = useLocaleState();
 
   if (isPending) {
     return null;
@@ -111,7 +113,9 @@ const CategoryGrid = () => {
                 />
                 <CardContent sx={{ paddingBottom: '0.5em' }}>
                   <Typography variant='h5' component='h2' align='center'>
-                    {humanize(record.name)}
+                    {locale === 'la'
+                      ? record.name_la
+                      : humanize(record.name)}
                   </Typography>
                 </CardContent>
               </CardActionArea>

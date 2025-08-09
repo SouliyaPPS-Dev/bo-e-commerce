@@ -15,6 +15,7 @@ import {
   ImageListItem,
   Typography,
 } from '@mui/material';
+import { humanize } from 'inflection';
 import {
   DateField,
   FunctionField,
@@ -22,21 +23,23 @@ import {
   ReferenceField,
   RichTextField,
   Show,
-  TextField,
-  useDefaultTitle,
   useRecordContext,
-  useShowContext,
   useTranslate,
 } from 'react-admin';
 import { useCurrencyContext } from '../components/CurrencySelector/CurrencyProvider';
+import { useLocaleState } from 'react-admin';
 
 const ProductTitle = () => {
-  const appTitle = useDefaultTitle();
-  const { defaultTitle } = useShowContext();
+  const record = useRecordContext();
+  const [locale] = useLocaleState();
+  if (!record) return null;
+
+  const title = locale === 'la' ? record.name_la : humanize(record.name);
+
   return (
     <>
-      <title>{`${appTitle} - ${defaultTitle}`}</title>
-      <span>{defaultTitle}</span>
+      <title>{title}</title>
+      <span>{title}</span>
     </>
   );
 };
@@ -44,6 +47,7 @@ const ProductTitle = () => {
 const ProductImage = () => {
   const translate = useTranslate();
   const record = useRecordContext();
+  const [locale] = useLocaleState();
 
   if (!record) return null;
 
@@ -52,12 +56,14 @@ const ProductImage = () => {
     : [record.image_url];
   const validImageUrls = imageUrls.filter((url) => url && url.trim() !== '');
 
+  const altText = locale === 'la' ? record.name_la : record.name;
+
   if (validImageUrls.length === 0) {
     return (
       <CardMedia
         component='img'
         image='/placeholder-product.svg'
-        alt={record.name || translate('product_image')}
+        alt={altText || translate('product_image')}
         sx={{
           width: '100%',
           height: 'auto',
@@ -75,7 +81,7 @@ const ProductImage = () => {
       <CardMedia
         component='img'
         image={validImageUrls[0]}
-        alt={record.name || translate('product_image')}
+        alt={altText || translate('product_image')}
         sx={{
           width: '100%',
           height: 'auto',
@@ -98,7 +104,7 @@ const ProductImage = () => {
           <CardMedia
             component='img'
             image={imageUrl}
-            alt={`${record.name || translate('product')} ${translate(
+            alt={`${altText || translate('product')} ${translate(
               'image'
             )} ${index + 1}`}
             sx={{
@@ -121,6 +127,7 @@ const ProductImage = () => {
 const ProductShow = () => {
   const { displayCurrency } = useCurrencyContext();
   const translate = useTranslate();
+  const [locale] = useLocaleState();
 
   return (
     <Show title={<ProductTitle />}>
@@ -141,22 +148,15 @@ const ProductShow = () => {
                   {translate('product_information')}
                 </Typography>
                 <Box sx={{ mb: 3 }}>
-                  <TextField
-                    source='name'
+                  <FunctionField
+                    render={(record: any) =>
+                      locale === 'la' ? record.name_la : record.name
+                    }
                     sx={{
                       fontSize: '1.5rem',
                       fontWeight: 600,
                       color: 'primary.main',
                       mb: 1,
-                    }}
-                  />
-                  &nbsp; &nbsp;
-                  <TextField
-                    source='name_la'
-                    label=''
-                    sx={{
-                      fontSize: '1.5rem',
-                      fontWeight: 600,
                     }}
                   />
                 </Box>
@@ -190,10 +190,14 @@ const ProductShow = () => {
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                   <Category color='primary' sx={{ mr: 1 }} />
                   <ReferenceField source='category_id' reference='categories'>
-                    <Chip
-                      label={<TextField source='name' />}
-                      color='primary'
-                      variant='outlined'
+                    <FunctionField
+                      render={(record: any) => (
+                        <Chip
+                          label={locale === 'la' ? record.name_la : record.name}
+                          color='primary'
+                          variant='outlined'
+                        />
+                      )}
                     />
                   </ReferenceField>
                 </Box>

@@ -40,6 +40,7 @@ import {
   useDefaultTitle,
   useDelete,
   useListContext,
+  useLocaleState,
   useNotify,
   useRecordContext,
   useRefresh,
@@ -47,6 +48,7 @@ import {
 } from 'react-admin';
 import { useCurrencyContext } from '../components/CurrencySelector/CurrencyProvider';
 import { formatCurrency } from '../utils/format';
+import { humanize } from 'inflection';
 
 const ProductList = () => {
   const isSmall = useMediaQuery<Theme>((theme) => theme.breakpoints.down('md'));
@@ -147,6 +149,7 @@ const ProductCard = () => {
   const translate = useTranslate();
   const record = useRecordContext();
   const theme = useTheme();
+  const [locale] = useLocaleState();
 
   const { displayCurrency, convert } = useCurrencyContext();
 
@@ -223,7 +226,7 @@ const ProductCard = () => {
             WebkitBoxOrient: 'vertical',
           }}
         >
-          {record.name}
+          {locale === 'la' ? record.name_la : record.name}
         </Typography>
 
         <Typography
@@ -371,6 +374,7 @@ const ProductFilters = () => {
   const [categories, setCategories] = React.useState<any[]>([]);
   const [loadingCategories, setLoadingCategories] = React.useState(true);
   const [searchValue, setSearchValue] = React.useState('');
+  const [locale] = useLocaleState();
 
   React.useEffect(() => {
     const fetchCategories = async () => {
@@ -628,7 +632,11 @@ const ProductFilters = () => {
                     )}
                   </ListItemIcon>
                   <ListItemText
-                    primary={category.name}
+                    primary={
+                      locale === 'la'
+                        ? category.name_la
+                        : humanize(category.name)
+                    }
                     primaryTypographyProps={{ variant: 'body2' }}
                   />
                 </ListItemButton>
