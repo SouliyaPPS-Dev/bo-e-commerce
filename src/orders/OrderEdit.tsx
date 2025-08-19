@@ -204,13 +204,15 @@ const OrderForm = () => {
                 </Grid>
               </Grid>
             </CardContent>
-            <Toolbar>
+            <Toolbar sx={{ display: 'flex' }}>
               <SaveButton />
-              <DeleteWithConfirmButton
-                confirmTitle={translate('confirm_delete')}
-                confirmContent={translate('confirm_delete_message')}
-                mutationMode="pessimistic"
-              />
+              <span style={{ marginLeft: 'auto' }}>
+                <DeleteWithConfirmButton
+                  confirmTitle={translate('confirm_delete')}
+                  confirmContent={translate('confirm_delete_message')}
+                  mutationMode="pessimistic"
+                />
+              </span>
             </Toolbar>
           </Card>
         </Box>

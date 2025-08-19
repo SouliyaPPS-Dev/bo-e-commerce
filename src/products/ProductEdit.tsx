@@ -12,6 +12,9 @@ import {
   useDefaultTitle,
   useEditContext,
   FormDataConsumer,
+  Toolbar,
+  SaveButton,
+  DeleteWithConfirmButton,
   useTranslate,
 } from 'react-admin';
 import Divider from '@mui/material/Divider';
@@ -39,7 +42,7 @@ const ProductEdit = () => {
   const translate = useTranslate();
   return (
     <Edit title={<ProductTitle />}>
-      <SimpleForm sx={{ maxWidth: '40em' }}>
+      <SimpleForm sx={{ maxWidth: '40em' }} toolbar={<ProductEditFormToolbar />}>
         <TextInput
           source='name'
           validate={required()}
@@ -218,3 +221,19 @@ const ProductEdit = () => {
 };
 
 export default ProductEdit;
+
+const ProductEditFormToolbar = () => {
+  const translate = useTranslate();
+  return (
+    <Toolbar sx={{ display: 'flex' }}>
+      <SaveButton />
+      <span style={{ marginLeft: 'auto' }}>
+        <DeleteWithConfirmButton
+          confirmTitle={translate('confirm_delete')}
+          confirmContent={translate('confirm_delete_message')}
+          mutationMode='pessimistic'
+        />
+      </span>
+    </Toolbar>
+  );
+};

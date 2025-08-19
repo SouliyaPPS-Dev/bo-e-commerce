@@ -9,6 +9,9 @@ import {
   required,
   ShowButton,
   SimpleForm,
+  Toolbar,
+  SaveButton,
+  DeleteWithConfirmButton,
   TextInput,
   TopToolbar,
   useRefresh,
@@ -26,7 +29,6 @@ const RichTextInput = lazy(() =>
 const BlogEditActions = () => (
   <TopToolbar>
     <ShowButton />
-    <DeleteButton />
   </TopToolbar>
 );
 
@@ -44,7 +46,7 @@ export const BlogEdit = () => {
 
   return (
     <Edit actions={<BlogEditActions />}>
-      <SimpleForm>
+      <SimpleForm toolbar={<BlogEditFormToolbar />}>
         {/* <TextField source='id' /> */}
         <TextInput source='title' validate={[required()]} fullWidth label={translate('resources.blogs.fields.title')} />
 
@@ -187,5 +189,21 @@ export const BlogEdit = () => {
         </FormDataConsumer>
       </SimpleForm>
     </Edit>
+  );
+};
+
+const BlogEditFormToolbar = () => {
+  const translate = useTranslate();
+  return (
+    <Toolbar sx={{ display: 'flex' }}>
+      <SaveButton />
+      <span style={{ marginLeft: 'auto' }}>
+        <DeleteWithConfirmButton
+          confirmTitle={translate('confirm_delete')}
+          confirmContent={translate('confirm_delete_message')}
+          mutationMode='pessimistic'
+        />
+      </span>
+    </Toolbar>
   );
 };

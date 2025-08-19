@@ -1,6 +1,5 @@
 import {
   DataTable,
-  DeleteButton,
   Edit,
   EditButton,
   ImageField,
@@ -10,6 +9,8 @@ import {
   SimpleForm,
   TextInput,
   TopToolbar,
+  Toolbar,
+  SaveButton,
   useDefaultTitle,
   useEditContext,
   useRefresh,
@@ -53,11 +54,7 @@ const ImageUrlField = (record: ProductCategory | any) => {
   );
 };
 
-const CategoryEditActions = () => (
-  <TopToolbar>
-    <DeleteButton />
-  </TopToolbar>
-);
+const CategoryEditActions = () => <TopToolbar />;
 
 const CategoryEdit = () => {
   const { displayCurrency, convert } = useCurrencyContext();
@@ -74,7 +71,7 @@ const CategoryEdit = () => {
 
   return (
     <Edit title={<CategoryTitle />} actions={<CategoryEditActions />}>
-      <SimpleForm>
+      <SimpleForm toolbar={<CategoryEditFormToolbar />}>
         <Box
           display='flex'
           flexDirection='column'
@@ -172,3 +169,9 @@ const CategoryTitle = () => {
 };
 
 export default CategoryEdit;
+
+const CategoryEditFormToolbar = () => (
+  <Toolbar>
+    <SaveButton />
+  </Toolbar>
+);

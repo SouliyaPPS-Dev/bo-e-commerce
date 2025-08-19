@@ -7,6 +7,8 @@ import {
   SelectInput,
   TopToolbar,
   ShowButton,
+  Toolbar,
+  SaveButton,
   useTranslate,
 } from 'react-admin';
 import { Box, Typography } from '@mui/material';
@@ -36,7 +38,7 @@ const CurrencyEdit = () => {
 
   return (
     <Edit actions={<CCYEditActions />}>
-      <SimpleForm validate={validateForm}>
+      <SimpleForm validate={validateForm} toolbar={<CurrencyEditFormToolbar />}>
         <Box
           sx={{
             display: 'flex',
@@ -82,3 +84,9 @@ const CurrencyEdit = () => {
 };
 
 export default CurrencyEdit;
+
+const CurrencyEditFormToolbar = () => (
+  <Toolbar>
+    <SaveButton />
+  </Toolbar>
+);
