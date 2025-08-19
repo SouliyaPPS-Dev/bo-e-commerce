@@ -11,6 +11,8 @@ import {
     SelectInput,
     TextField,
     Toolbar,
+    SaveButton,
+    DeleteWithConfirmButton,
     useRecordContext,
     useTranslate,
     useDefaultTitle,
@@ -202,7 +204,14 @@ const OrderForm = () => {
                 </Grid>
               </Grid>
             </CardContent>
-            <Toolbar />
+            <Toolbar>
+              <SaveButton />
+              <DeleteWithConfirmButton
+                confirmTitle={translate('confirm_delete')}
+                confirmContent={translate('confirm_delete_message')}
+                mutationMode="pessimistic"
+              />
+            </Toolbar>
           </Card>
         </Box>
       </Form>

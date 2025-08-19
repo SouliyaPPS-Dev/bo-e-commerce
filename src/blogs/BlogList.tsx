@@ -4,7 +4,7 @@ import {
   CreateButton,
   DataTable,
   DateField,
-  DeleteButton,
+  DeleteWithConfirmButton,
   EditButton,
   ExportButton,
   FilterButton,
@@ -165,7 +165,7 @@ export const BlogList = () => {
           source='delete'
           field={DateField}
           label={translate('delete')}
-          render={DeleteButton}
+          render={DeleteWithConfirmButton}
         />
       </DataTable>
     </List>
