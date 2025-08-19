@@ -44,6 +44,7 @@ const UserCreate = () => {
   return (
     <Create
       title={translate('create_user')}
+      transform={(data: any) => ({ ...data, status: true })}
       mutationOptions={{
         onSuccess: () => {
           notify(translate('user_created_successfully'), { type: 'success' });
@@ -56,7 +57,7 @@ const UserCreate = () => {
         },
       }}
     >
-      <SimpleForm validate={validateForm}>
+      <SimpleForm validate={validateForm} defaultValues={{ status: true }}>
         <Box
           sx={{
             display: 'flex',

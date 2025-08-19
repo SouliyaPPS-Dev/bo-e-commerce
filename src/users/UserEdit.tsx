@@ -32,7 +32,7 @@ const UserEdit = () => {
   }, [location.pathname, setSelectImage]);
 
   return (
-    <Edit title={translate('edit_user')}>
+    <Edit title={translate('edit_user')} transform={(data: any) => ({ ...data, status: true })}>
       <SimpleForm>
         <Grid container spacing={3}>
           <Grid

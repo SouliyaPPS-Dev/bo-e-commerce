@@ -256,7 +256,7 @@ const CustomerList = () => {
         <Column source='username' label={translate('username')} />
         <Column source='email' field={BlackEmailField} label={translate('email')} />
         <Column source='phone_number' label={translate('phone_number')} />
-        <Column source='verified' render={AccountStatusField} label={translate('verified')} />
+        <Column source='verified' render={AccountStatusField} label={translate('status')} />
       </DataTable>
     </List>
   );
