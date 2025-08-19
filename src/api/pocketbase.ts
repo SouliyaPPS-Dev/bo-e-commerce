@@ -16,6 +16,29 @@ export const refreshAuthToken = async (): Promise<void> => {
   }
 };
 
+// Global 401 handler: retry once after refreshing token
+const originalSend = pb.send.bind(pb);
+// Override the SDK send method to auto-refresh on 401 across all calls
+// This affects: collection CRUD, file operations, and custom endpoints via pb.send
+pb.send = (async (url: string, options: any = {}) => {
+  try {
+    return await originalSend(url, options);
+  } catch (error: any) {
+    if (error && error.status === 401) {
+      try {
+        await pb.collection('users').authRefresh();
+        // Retry original request once after successful refresh
+        return await originalSend(url, options);
+      } catch (refreshError) {
+        // Ensure invalid auth is cleared so RA can redirect/login via authProvider
+        try { pb.authStore.clear(); } catch {}
+        throw error;
+      }
+    }
+    throw error;
+  }
+}) as any;
+
 // Generic function to fetch a single document from the collection
 export const fetchPocketbaseDocument = async <T extends Record<string, any>>(
   collection: string,
