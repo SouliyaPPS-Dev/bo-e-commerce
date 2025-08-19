@@ -10,6 +10,8 @@ import {
   required,
   SelectInput,
   SimpleForm,
+  Toolbar,
+  SaveButton,
   TextField,
   TextInput,
   useRecordContext,
@@ -33,7 +35,7 @@ const UserEdit = () => {
 
   return (
     <Edit title={translate('edit_user')} transform={(data: any) => ({ ...data, status: true })}>
-      <SimpleForm>
+      <SimpleForm toolbar={<UserEditFormToolbar />}>
         <Grid container spacing={3}>
           <Grid
             size={{
@@ -215,5 +217,11 @@ const AvatarDisplay = () => {
     />
   );
 };
+
+const UserEditFormToolbar = () => (
+  <Toolbar>
+    <SaveButton />
+  </Toolbar>
+);
 
 export default UserEdit;

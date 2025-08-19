@@ -12,6 +12,7 @@ export interface User {
   phone_number: string;
   emailVisibility: boolean;
   verified: boolean;
+  status?: boolean;
   created: string;
   updated: string;
 }
