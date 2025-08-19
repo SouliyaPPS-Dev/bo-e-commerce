@@ -186,6 +186,9 @@ const customLaoMessages: TranslationMessages = {
   delete_product_confirmation: 'ທ່ານແນ່ໃຈບໍວ່າຕ້ອງການລຶບສິນຄ້ານີ້?',
   product_deleted: 'ສິນຄ້າຖືກລຶບແລ້ວ',
   product_delete_error: 'ຜິດພາດ: ບໍ່ສາມາດລຶບສິນຄ້າໄດ້',
+  error: 'ຜິດພາດ',
+  not_enough_stock:
+    'ສິນຄ້າ %{product} ບໍ່ພຽງພໍ. ຈໍານວນທີ່ມີ: %{available}, ຈໍານວນທີ່ຕ້ອງການ: %{required}',
   filters: 'ຕົວກອງ',
   search_products: 'ຄົ້ນຫາສິນຄ້າ...',
   loading_categories: 'ກຳລັງໂຫຼດໝວດໝູ່...',

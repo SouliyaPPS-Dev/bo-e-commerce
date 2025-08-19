@@ -178,6 +178,9 @@ const customEnglishMessages: TranslationMessages = {
   delete_product_confirmation: 'Are you sure you want to delete this product?',
   product_deleted: 'Product deleted',
   product_delete_error: 'Error: Product not deleted',
+  error: 'Error',
+  not_enough_stock:
+    'Not enough stock for product %{product}. Available: %{available}, Required: %{required}',
   filters: 'Filters',
   search_products: 'Search products...',
   loading_categories: 'Loading categories...',

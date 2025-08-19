@@ -951,6 +951,8 @@ const OrdersTable = React.memo(
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [total, setTotal] = useState(0);
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [dialogMessage, setDialogMessage] = useState('');
 
     const fetchOrders = useCallback(async () => {
       setLoading(true);
@@ -1117,7 +1119,8 @@ const OrdersTable = React.memo(
     const handleStatusChange = async (orderId: string, newStatus: string) => {
       const order = orders.find((o) => o.id === orderId);
       if (!order) {
-        alert('Order not found!');
+        setDialogMessage('Order not found!');
+        setDialogOpen(true);
         return;
       }
       const oldStatus = order.status;
@@ -1143,11 +1146,15 @@ const OrdersTable = React.memo(
               product.total_count <
               (product.sell_count || 0) + item.quantity
             ) {
-              alert(
-                `Not enough stock for product ${product.name}. Available: ${
-                  product.total_count - (product.sell_count || 0)
-                }, Required: ${item.quantity}`
+              setDialogMessage(
+                translate('not_enough_stock', {
+                  product: product.name,
+                  available:
+                    product.total_count - (product.sell_count || 0),
+                  required: item.quantity,
+                })
               );
+              setDialogOpen(true);
               return; // Abort status change
             }
           }
@@ -1202,15 +1209,18 @@ const OrdersTable = React.memo(
             response: { status: number; data: any };
           };
           if (pbError.response && pbError.response.status === 400) {
-            alert(
+            setDialogMessage(
               'Failed to update order status: Invalid data. Please check stock levels and try again.'
             );
           } else {
-            alert('Failed to update order status.');
+            setDialogMessage('Failed to update order status.');
           }
         } else {
-          alert('An unknown error occurred while updating order status.');
+          setDialogMessage(
+            'An unknown error occurred while updating order status.'
+          );
         }
+        setDialogOpen(true);
       }
     };
 
@@ -1237,6 +1247,7 @@ const OrdersTable = React.memo(
     }
 
     return (
+      <>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -1276,6 +1287,26 @@ const OrdersTable = React.memo(
           }}
         />
       </TableContainer>
+
+      <Dialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        aria-labelledby='info-dialog-title'
+        aria-describedby='info-dialog-description'
+      >
+        <DialogTitle id='info-dialog-title'>{translate('error')}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id='info-dialog-description'>
+            {dialogMessage}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDialogOpen(false)} color='primary' autoFocus>
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+      </>
     );
   }
 );
