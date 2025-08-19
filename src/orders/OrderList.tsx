@@ -487,22 +487,39 @@ const OrderDetail: React.FC<{
                 },
               }}
             >
-              {order.status === 'pending' && (
+              {order.status === 'pending' && [
                 <MenuItem
                   value={'pending'}
                   sx={{ color: getStatusColor('pending') }}
                   disabled={order.status !== 'pending'}
                 >
                   {translate('pending')}
-                </MenuItem>
-              )}
-              <MenuItem
-                value={'purchased'}
-                sx={{ color: getStatusColor('purchased') }}
-              >
-                {translate('purchased')}
-              </MenuItem>
-              {order.status !== 'pending' && [
+                </MenuItem>,
+                <MenuItem
+                  value={'purchased'}
+                  sx={{ color: getStatusColor('purchased') }}
+                >
+                  {translate('purchased')}
+                </MenuItem>,
+              ]}
+
+              {order.status === 'purchased' && [
+                <MenuItem
+                  value={'purchased'}
+                  sx={{ color: getStatusColor('purchased') }}
+                >
+                  {translate('purchased')}
+                </MenuItem>,
+                <MenuItem
+                  key='delivering'
+                  value={'delivering'}
+                  sx={{ color: getStatusColor('delivering') }}
+                >
+                  {translate('delivering')}
+                </MenuItem>,
+              ]}
+
+              {order.status === 'delivering' && [
                 <MenuItem
                   key='delivering'
                   value={'delivering'}
@@ -511,6 +528,15 @@ const OrderDetail: React.FC<{
                   {translate('delivering')}
                 </MenuItem>,
                 <MenuItem
+                  value={'completed'}
+                  sx={{ color: getStatusColor('completed') }}
+                >
+                  {translate('completed')}
+                </MenuItem>,
+              ]}
+
+              {order.status === 'completed' && [
+                <MenuItem
                   key='completed'
                   value={'completed'}
                   sx={{ color: getStatusColor('completed') }}
@@ -518,14 +544,16 @@ const OrderDetail: React.FC<{
                   {translate('completed')}
                 </MenuItem>,
               ]}
-              <MenuItem
-                key='cancel'
-                value={'cancel'}
-                sx={{ color: getStatusColor('cancel') }}
-              >
-                {translate('cancel')}
-              </MenuItem>
-              ,
+
+              {order.status !== 'completed' && [
+                <MenuItem
+                  key='cancel'
+                  value={'cancel'}
+                  sx={{ color: getStatusColor('cancel') }}
+                >
+                  {translate('cancel')}
+                </MenuItem>,
+              ]}
             </Select>
           </FormControl>
         </TableCell>
