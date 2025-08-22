@@ -3,6 +3,8 @@ import { TranslationMessages } from 'react-admin';
 
 const customLaoMessages: TranslationMessages = {
   ...englishMessages,
+  confirm_password_reset:
+    'ທ່ານແນ່ໃຈບໍວ່າຕ້ອງການສົ່ງອີເມວຕັ້ງລະຫັດຜ່ານໃໝ່ໄປທີ່ %{email}?',
   search: 'ຄົ້ນຫາ',
   configuration: 'ການຕັ້ງຄ່າ',
   language: 'ພາສາ',
@@ -361,8 +363,7 @@ const customLaoMessages: TranslationMessages = {
     failed_to_send_password_reset_email:
       'ລົ້ມເຫຼວໃນການສົ່ງອີເມວຕັ້ງລະຫັດຜ່ານໃໝ່ໄປທີ່ %{email}',
     reset: 'ຕັ້ງຄ່າໃໝ່',
-    confirm_password_reset:
-      'ທ່ານແນ່ໃຈບໍວ່າຕ້ອງການສົ່ງອີເມວຕັ້ງລະຫັດຜ່ານໃໝ່ໄປທີ່ %{email}?',
+
     username_required: 'ຊື່ຜູ້ໃຊ້ແມ່ນຈຳເປັນ',
     email_required: 'ອີເມວແມ່ນຈຳເປັນ',
     full_name_required: 'ຊື່ເຕັມແມ່ນຈຳເປັນ',

@@ -3,6 +3,7 @@ import { TranslationMessages } from 'react-admin';
 
 const customEnglishMessages: TranslationMessages = {
   ...englishMessages,
+  confirm_password_reset: 'Are you sure you want to send a password reset email to %{email}?',
   search: 'Search',
   configuration: 'Configuration',
   language: 'Language',
@@ -360,7 +361,6 @@ const customEnglishMessages: TranslationMessages = {
     password_reset_email_sent: 'Password reset email sent to %{email}',
     failed_to_send_password_reset_email: 'Failed to send password reset email to %{email}',
     reset: 'Reset',
-    confirm_password_reset: 'Are you sure you want to send a password reset email to %{email}?',
     username_required: 'Username is required',
     email_required: 'Email is required',
     full_name_required: 'Full name is required',

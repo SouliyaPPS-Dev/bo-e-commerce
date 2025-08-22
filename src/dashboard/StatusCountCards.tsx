@@ -54,23 +54,24 @@ const ModernStatusCard: React.FC<{
         backgroundColor: '#fff',
         border: '1px solid #ece7df',
         boxShadow: 'none',
-        px: 3,
-        py: 3,
+        px: { xs: 2, sm: 3 },
+        py: { xs: 2, sm: 3 },
         position: 'relative',
         overflow: 'hidden',
         display: 'flex',
         alignItems: 'center',
         textDecoration: 'none',
+        minWidth: 0,
       }}
     >
       {/* Background shape */}
       <Box
         sx={{
           position: 'absolute',
-          left: -60,
+          left: -50,
           top: 0,
           bottom: 0,
-          width: 170,
+          width: { xs: 120, sm: 170 },
           backgroundColor: '#fef1dc',
           borderTopRightRadius: 100,
           borderBottomRightRadius: 180,
@@ -91,9 +92,10 @@ const ModernStatusCard: React.FC<{
           justifyContent: 'center',
           fontSize: 22,
           zIndex: 1,
-          ml: -1,
-          mr: 3,
+          ml: { xs: 0, sm: -1 },
+          mr: { xs: 2, sm: 3 },
           mt: 1,
+          flexShrink: 0,
         }}
       >
         {icon}
@@ -101,22 +103,36 @@ const ModernStatusCard: React.FC<{
       {/* Text */}
       <Box
         sx={{
-          ml: 5,
+          ml: { xs: 2, sm: 5 },
           flex: 1,
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'flex-end',
+          alignItems: { xs: 'flex-start', sm: 'flex-end' },
+          minWidth: 0,
         }}
       >
         <Typography
           variant='body2'
-          sx={{ fontSize: '0.9rem', color: '#7b7462', fontWeight: 500 }}
+          sx={{
+            fontSize: { xs: '0.85rem', sm: '0.9rem' },
+            color: '#7b7462',
+            fontWeight: 500,
+            textAlign: { xs: 'left', sm: 'right' },
+            width: '100%',
+          }}
         >
           {translate(title)}
         </Typography>
         <Typography
           variant='h6'
-          sx={{ fontSize: '1.5rem', color: '#000', fontWeight: 700 }}
+          sx={{
+            fontSize: { xs: '1.25rem', sm: '1.5rem' },
+            color: '#000',
+            fontWeight: 700,
+            textAlign: { xs: 'left', sm: 'right' },
+            width: '100%',
+            lineHeight: 1.2,
+          }}
         >
           {value}
         </Typography>
@@ -144,7 +160,7 @@ const StatusCountCards: React.FC<Props> = ({
   const translate = useTranslate();
 
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={{ xs: 1.5, sm: 2, md: 3 }}>
       <Grid
         size={{
           xs: 12,
