@@ -1,5 +1,5 @@
 import { AuthProvider } from 'react-admin';
-import pb, { refreshAuthToken } from './api/pocketbase'; // Import PocketBase instance and refreshAuthToken
+import pb from './api/pocketbase'; // Import PocketBase instance
 
 const authProvider: AuthProvider = {
   login: async ({
@@ -38,20 +38,15 @@ const authProvider: AuthProvider = {
     return Promise.resolve();
   },
   checkError: async ({ status }: { status: number }) => {
+    // On 401/403, do not try to refresh here to avoid loops.
+    // Just clear auth and reject so RA can redirect to login.
     if (status === 401 || status === 403) {
-      try {
-        await refreshAuthToken();
-        // If refresh is successful, token is renewed, so resolve the error
-        return Promise.resolve();
-      } catch (error) {
-        // If refresh fails, then log out
-        localStorage.removeItem('username');
-        localStorage.removeItem('avatar');
-        localStorage.removeItem('id');
-        localStorage.removeItem('role');
-        pb.authStore.clear(); // Clear PocketBase auth store
-        return Promise.reject();
-      }
+      localStorage.removeItem('username');
+      localStorage.removeItem('avatar');
+      localStorage.removeItem('id');
+      localStorage.removeItem('role');
+      try { pb.authStore.clear(); } catch {}
+      return Promise.reject();
     }
     return Promise.resolve();
   },

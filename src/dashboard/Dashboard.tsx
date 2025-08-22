@@ -1,11 +1,4 @@
-import {
-  Alert,
-  Box,
-  CircularProgress,
-  Theme,
-  useMediaQuery,
-  Grid,
-} from '@mui/material';
+import { Alert, Box, CircularProgress, Grid } from '@mui/material';
 import { useState } from 'react';
 
 import OrderPendingList from './OrderPendingList';
@@ -24,8 +17,6 @@ interface FilterParams {
 }
 
 const Dashboard = () => {
-  const isSmall = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
-
   const [filterParams, setFilterParams] = useState<FilterParams>({
     isYear: false,
     startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
@@ -101,11 +92,15 @@ const Dashboard = () => {
   };
 
   return (
-    <Box sx={{ p: 2 }}>
-      <Grid container spacing={2}>
+    <Box sx={{ p: { xs: 1, sm: 2 } }}>
+      <Grid
+        container
+        spacing={{ xs: 1.5, sm: 2, md: 3 }}
+        sx={{ alignItems: 'stretch', minWidth: 0 }}
+      >
         {/* Status Section */}
         {statusCount && (
-          <Grid size={12}>
+          <Grid size={{ xs: 12 }} sx={{ minWidth: 0 }}>
             <StatusCountCards
               sellRevenue={sumSellRevenue(sellRevenue || [])}
               orderStatusCount={statusCount.orderStatusCount}
@@ -118,27 +113,34 @@ const Dashboard = () => {
         {/* Sell Revenue Section */}
         {sellRevenue && (
           <Grid
-            size={{
-              xs: 12,
-              md: isSmall ? 12 : 6
-            }}>
-            <SellRevenueChart
-              data={sellRevenue}
-              onFilterChange={handleFilterChange}
-              loading={revenueLoading}
-              filterParams={filterParams}
-            />
+            size={{ xs: 12, md: 6 }}
+            sx={{
+              order: { xs: 3, md: 1 },
+              display: 'flex',
+              flexDirection: 'column',
+              minWidth: 0,
+            }}
+          >
+            <Box sx={{ flex: 1, minWidth: 0 }}>
+              <SellRevenueChart
+                data={sellRevenue}
+                onFilterChange={handleFilterChange}
+                loading={revenueLoading}
+                filterParams={filterParams}
+              />
+            </Box>
           </Grid>
         )}
 
         {/* Order Pending List Section */}
         {orderList && (
           <Grid
-            size={{
-              xs: 12,
-              md: isSmall ? 12 : 6
-            }}>
-            <OrderPendingList data={orderList} />
+            size={{ xs: 12, md: 6 }}
+            sx={{ order: { xs: 2, md: 2 }, minWidth: 0 }}
+          >
+            <Box sx={{ overflowX: 'auto' }}>
+              <OrderPendingList data={orderList} />
+            </Box>
           </Grid>
         )}
       </Grid>

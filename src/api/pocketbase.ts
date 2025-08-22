@@ -6,36 +6,86 @@ pb.autoCancellation(false);
 
 export default pb;
 
-// Function to refresh the authentication token
-export const refreshAuthToken = async (): Promise<void> => {
-  try {
-    await pb.collection('users').authRefresh();
-  } catch (error) {
-    console.error('Failed to refresh auth token:', error);
-    // Optionally, handle token refresh failure (e.g., redirect to login)
-  }
-};
-
-// Global 401 handler: retry once after refreshing token
+// Global 401 handler with single refresh attempt and proper cleanup
 const originalSend = pb.send.bind(pb);
-// Override the SDK send method to auto-refresh on 401 across all calls
-// This affects: collection CRUD, file operations, and custom endpoints via pb.send
+
+let refreshPromise: Promise<any> | null = null;
+
 pb.send = (async (url: string, options: any = {}) => {
   try {
     return await originalSend(url, options);
   } catch (error: any) {
-    if (error && error.status === 401) {
+    if (!error || error.status !== 401) {
+      throw error;
+    }
+
+    // Do not try to refresh if there's no token or if the request
+    // was already an auth call (to avoid loops)
+    const token = pb.authStore?.token;
+    const lowerUrl = (url || '').toString().toLowerCase();
+    if (!token || lowerUrl.includes('auth-refresh') || lowerUrl.includes('auth-with-password')) {
+      throw error;
+    }
+
+    // If a refresh is already in progress, wait for it
+    if (refreshPromise) {
       try {
-        await pb.collection('users').authRefresh();
-        // Retry original request once after successful refresh
+        await refreshPromise;
+        // Retry original request after successful refresh
         return await originalSend(url, options);
-      } catch (refreshError) {
-        // Ensure invalid auth is cleared so RA can redirect/login via authProvider
+      } catch (e) {
+        // Refresh failed; ensure cleanup then propagate
         try { pb.authStore.clear(); } catch {}
+        try {
+          localStorage.removeItem('username');
+          localStorage.removeItem('avatar');
+          localStorage.removeItem('id');
+          localStorage.removeItem('role');
+        } catch {}
         throw error;
       }
     }
-    throw error;
+
+    // Start a single refresh attempt
+    refreshPromise = (async () => {
+      // Call the refresh endpoint directly via originalSend to avoid recursion
+      const refreshUrl = '/api/collections/users/auth-refresh';
+      const headers = Object.assign({}, options?.headers || {}, {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      });
+      const res = await originalSend(refreshUrl, { method: 'POST', headers });
+      // Expect res to include token and record; update auth store if present
+      try {
+        const token = (res as any)?.token;
+        const record = (res as any)?.record;
+        if (token) {
+          // save(token, model?) - model is optional; pass record if available
+          // @ts-ignore
+          pb.authStore.save(token, record);
+        }
+      } catch {}
+      return res;
+    })();
+
+    try {
+      await refreshPromise;
+      // Clear the promise for next time
+      refreshPromise = null;
+      // Retry original request
+      return await originalSend(url, options);
+    } catch (refreshError) {
+      // Cleanup and propagate error
+      refreshPromise = null;
+      try { pb.authStore.clear(); } catch {}
+      try {
+        localStorage.removeItem('username');
+        localStorage.removeItem('avatar');
+        localStorage.removeItem('id');
+        localStorage.removeItem('role');
+      } catch {}
+      throw error;
+    }
   }
 }) as any;
 

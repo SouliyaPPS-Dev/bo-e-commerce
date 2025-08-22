@@ -1,4 +1,4 @@
-import pb, { refreshAuthToken } from '../api/pocketbase';
+import pb from '../api/pocketbase';
 import authProvider from '../authProvider';
 
 interface PocketBaseSendOptions {
@@ -16,17 +16,10 @@ export const pbHttpClient = async (
     const response = await pb.send(url, options);
     return response;
   } catch (error: any) {
-    if (error.status === 401) {
-      try {
-        await refreshAuthToken();
-        // If token refresh is successful, retry the original request
-        const response = await pb.send(url, options);
-        return response;
-      } catch (refreshError) {
-        // If token refresh fails, trigger logout via authProvider
-        authProvider.logout({});
-        throw error; // Re-throw the original 401 error to propagate
-      }
+    // If we get here with 401, the global pb.send handler already
+    // attempted a refresh and failed. Logout and propagate the error.
+    if (error && error.status === 401) {
+      try { await authProvider.logout({}); } catch {}
     }
     throw error;
   }
