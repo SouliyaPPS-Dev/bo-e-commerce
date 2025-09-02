@@ -1,5 +1,15 @@
 image: node:20-alpine
 
+# Only create pipelines when explicitly allowed.
+# This avoids the GitLab.com identity verification gate from blocking every push.
+# Enable by setting project variable `ALLOW_CI` = "1" once your account is verified
+# or you have a private runner registered.
+workflow:
+  rules:
+    - if: '$ALLOW_CI == "1"'
+      when: always
+    - when: never
+
 stages:
   - build
   - deploy
