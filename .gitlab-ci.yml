@@ -12,8 +12,6 @@ stages:
   - deploy
 
 variables:
-  # Speed up installs by using a local npm cache directory
-  NPM_CONFIG_CACHE: .npm
   # For project pages, assets are served from "/<project>/"
   # Override to "/" for user/group pages or custom domain
   VITE_BASE: "/${CI_PROJECT_NAME}/"
@@ -38,8 +36,6 @@ build:
     - test -f dist/index.html || (echo "ERROR: dist/index.html missing; build likely failed" && exit 1)
     # Ensure the generated HTML uses the correct base path for GitLab Pages (match <base href="/"> or self-closing)
     - if [ -f dist/index.html ]; then sed -i -E 's#<base href="/"\s*/?>#<base href="'"${VITE_BASE}"'" />#' dist/index.html; fi
-    # If Vite didn't copy static public assets, add them (manifest, favicon, etc.)
-    - if [ ! -f dist/manifest.json ] && [ -d public ]; then cp -r public/* dist/ || true; fi
     # Publish exactly the build output to avoid mixing dev files
     - rm -rf public && mv dist public
     # SPA fallback for client-side routing on GitLab Pages
