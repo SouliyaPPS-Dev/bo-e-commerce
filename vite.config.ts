@@ -25,8 +25,9 @@ export default defineConfig(async () => {
     }
   }
 
+  const base = process.env.VITE_BASE || '/';
   return {
-    base: '/',
+    base,
     plugins: [react()],
     server: {
       port: 8000,
