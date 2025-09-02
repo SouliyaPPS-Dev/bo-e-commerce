@@ -22,14 +22,7 @@ build:
     - echo "Installing dependencies with Bun"
     - bun install --frozen-lockfile
     # Decide VITE_BASE from Pages URL: apex domains use "/", project paths use "/<project>/"
-    - |
-      if [ -n "${CI_PAGES_URL}" ]; then
-        if echo "${CI_PAGES_URL}" | grep -q "/${CI_PROJECT_NAME}"; then
-          export VITE_BASE="/${CI_PROJECT_NAME}/"
-        else
-          export VITE_BASE="/"
-        fi
-      fi
+    - if [ -n "${CI_PAGES_URL}" ]; then if echo "${CI_PAGES_URL}" | grep -q "/${CI_PROJECT_NAME}"; then export VITE_BASE="/${CI_PROJECT_NAME}/"; else export VITE_BASE="/"; fi; fi
     - echo "Building with VITE_BASE='${VITE_BASE}' using Bun"
     - VITE_BASE=${VITE_BASE} bun run build
     # Fail fast if build output missing
