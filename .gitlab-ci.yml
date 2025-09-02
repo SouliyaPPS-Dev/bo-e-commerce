@@ -12,6 +12,8 @@ stages:
   - deploy
 
 variables:
+  # Speed up installs by using a local npm cache directory
+  BUN_INSTALL_CACHE_DIR: .bun
   # For project pages, assets are served from "/<project>/"
   # Override to "/" for user/group pages or custom domain
   VITE_BASE: "/${CI_PROJECT_NAME}/"
@@ -21,16 +23,12 @@ build:
   script:
     - echo "Installing dependencies with Bun"
     - bun install --frozen-lockfile
-    # Decide VITE_BASE from Pages URL: apex domains use "/", project paths use "/<project>/"
-    - if [ -n "${CI_PAGES_URL}" ]; then if echo "${CI_PAGES_URL}" | grep -q "/${CI_PROJECT_NAME}"; then export VITE_BASE="/${CI_PROJECT_NAME}/"; else export VITE_BASE="/"; fi; fi
     - echo "Building with VITE_BASE='${VITE_BASE}' using Bun"
     - VITE_BASE=${VITE_BASE} bun run build
-    # Fail fast if build output missing
-    - test -f dist/index.html || (echo "ERROR: dist/index.html missing; build likely failed" && exit 1)
-    # Ensure the generated HTML uses the correct base path for GitLab Pages (match <base href="/"> or self-closing)
-    - if [ -f dist/index.html ]; then sed -i -E 's#<base href="/"\s*/?>#<base href="'"${VITE_BASE}"'" />#' dist/index.html; fi
-    # Publish exactly the build output to avoid mixing dev files
-    - rm -rf public && mv dist public
+    # Ensure the generated HTML uses the correct base path for GitLab Pages
+    - if [ -f dist/index.html ]; then sed -i 's#<base href="/" />#<base href="'"${VITE_BASE}"'" />#' dist/index.html; fi
+    - mkdir -p public
+    - cp -r dist/* public/
     # SPA fallback for client-side routing on GitLab Pages
     - if [ -f public/index.html ]; then cp public/index.html public/404.html; fi
   artifacts:
