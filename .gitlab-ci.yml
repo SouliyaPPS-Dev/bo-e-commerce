@@ -23,13 +23,16 @@ build:
   script:
     - echo "Installing dependencies with Bun"
     - bun install --frozen-lockfile
+    # Derive VITE_BASE from CI_PAGES_URL path (apex/custom domain "/"; else path with trailing slash)
+    - if [ -n "${CI_PAGES_URL}" ]; then PATH_PART=$(printf "%s" "${CI_PAGES_URL}" | sed -E 's#^[^/]+://[^/]+(/.*)?$#\1#'); fi
+    - if [ -z "${PATH_PART}" ] || [ "${PATH_PART}" = "/" ]; then export VITE_BASE="/"; else case "${PATH_PART}" in */) export VITE_BASE="${PATH_PART}" ;; *) export VITE_BASE="${PATH_PART}/" ;; esac; fi
     - echo "Building with VITE_BASE='${VITE_BASE}' using Bun"
     - VITE_BASE=${VITE_BASE} bun run build
-    # Ensure the generated HTML uses the correct base path for GitLab Pages
-    - if [ -f dist/index.html ]; then sed -i 's#<base href="/" />#<base href="'"${VITE_BASE}"'" />#' dist/index.html; fi
-    - mkdir -p public
-    - cp -r dist/* public/
-    # SPA fallback for client-side routing on GitLab Pages
+    - test -f dist/index.html || (echo "ERROR: dist/index.html missing; build likely failed" && exit 1)
+    - test -d dist/assets || (echo "ERROR: dist/assets missing; asset URLs would 404" && ls -la dist && exit 1)
+    - export BASE_REPL="s#<base href=\"/\"[[:space:]]*/?>#<base href=\"${VITE_BASE}\" />#"
+    - sed -i -E "$BASE_REPL" dist/index.html || true
+    - rm -rf public && mv dist public
     - if [ -f public/index.html ]; then cp public/index.html public/404.html; fi
   artifacts:
     name: build-${CI_COMMIT_SHA}
@@ -45,6 +48,19 @@ pages:
   artifacts:
     paths:
       - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: always
+
+deploy_firebase:
+  stage: deploy
+  needs: ["build"]
+  variables:
+    FIREBASE_PROJECT: "bo-soysb"
+  script:
+    - '[ -n "${FIREBASE_TOKEN}" ] || (echo "ERROR: FIREBASE_TOKEN is not set in CI/CD variables" && exit 1)'
+    - echo "Deploying to Firebase Hosting (project: ${FIREBASE_PROJECT})"
+    - bunx --bun firebase-tools@13.24.0 deploy --only hosting --project "${FIREBASE_PROJECT}" --non-interactive --token "${FIREBASE_TOKEN}"
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: always
