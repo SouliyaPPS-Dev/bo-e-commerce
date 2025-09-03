@@ -1,13 +1,30 @@
 {
   "hosting": {
-    "public": "public",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
+    "source": ".",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "headers": [
+      {
+        "source": "/assets/**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=31536000, immutable"
+          }
+        ]
+      },
+      {
+        "source": "/favicon.ico",
+        "headers": [
+          { "key": "Cache-Control", "value": "public, max-age=86400" }
+        ]
+      },
+      {
+        "source": "/manifest.json",
+        "headers": [{ "key": "Cache-Control", "value": "public, max-age=3600" }]
+      }
     ],
-    "rewrites": [
-      { "source": "**", "destination": "/index.html" }
-    ]
+    "frameworksBackend": {
+      "region": "asia-east1"
+    }
   }
 }

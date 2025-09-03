@@ -12,37 +12,50 @@ stages:
   - deploy
 
 variables:
-  # Speed up installs by using a local npm cache directory
+  # Bun cache to speed up installs
   BUN_INSTALL_CACHE_DIR: .bun
-  # For project pages, assets are served from "/<project>/"
-  # Override to "/" for user/group pages or custom domain
-  VITE_BASE: "/${CI_PROJECT_NAME}/"
 
-build:
+build_pages:
   stage: build
   script:
     - echo "Installing dependencies with Bun"
     - bun install --frozen-lockfile
-    # Derive VITE_BASE from CI_PAGES_URL path (apex/custom domain "/"; else path with trailing slash)
-    - if [ -n "${CI_PAGES_URL}" ]; then PATH_PART=$(printf "%s" "${CI_PAGES_URL}" | sed -E 's#^[^/]+://[^/]+(/.*)?$#\1#'); fi
-    - if [ -z "${PATH_PART}" ] || [ "${PATH_PART}" = "/" ]; then export VITE_BASE="/"; else case "${PATH_PART}" in */) export VITE_BASE="${PATH_PART}" ;; *) export VITE_BASE="${PATH_PART}/" ;; esac; fi
-    - echo "Building with VITE_BASE='${VITE_BASE}' using Bun"
+    - export VITE_BASE="/${CI_PROJECT_NAME}/"
+    - echo "Building for GitLab Pages with VITE_BASE='${VITE_BASE}'"
     - VITE_BASE=${VITE_BASE} bun run build
     - test -f dist/index.html || (echo "ERROR: dist/index.html missing; build likely failed" && exit 1)
     - test -d dist/assets || (echo "ERROR: dist/assets missing; asset URLs would 404" && ls -la dist && exit 1)
-    - export BASE_REPL="s#<base href=\"/\"[[:space:]]*/?>#<base href=\"${VITE_BASE}\" />#"
-    - sed -i -E "$BASE_REPL" dist/index.html || true
     - rm -rf public && mv dist public
     - if [ -f public/index.html ]; then cp public/index.html public/404.html; fi
   artifacts:
-    name: build-${CI_COMMIT_SHA}
+    name: build-pages-${CI_COMMIT_SHA}
+    when: on_success
+    paths:
+      - public
+
+build_firebase:
+  stage: build
+  script:
+    - echo "Installing dependencies with Bun"
+    - bun install --frozen-lockfile
+    - export VITE_BASE="/"
+    - echo "Building for Firebase with VITE_BASE='${VITE_BASE}'"
+    - VITE_BASE=${VITE_BASE} bun run build
+    - test -f dist/index.html || (echo "ERROR: dist/index.html missing; build likely failed" && exit 1)
+    - test -d dist/assets || (echo "ERROR: dist/assets missing; asset URLs would 404" && ls -la dist && exit 1)
+    - rm -rf public && mv dist public
+    - if [ -f public/index.html ]; then cp public/index.html public/404.html; fi
+  artifacts:
+    name: build-firebase-${CI_COMMIT_SHA}
     when: on_success
     paths:
       - public
 
 pages:
   stage: deploy
-  needs: ["build"]
+  needs:
+    - job: build_pages
+      artifacts: true
   script:
     - echo "Publishing GitLab Pages"
   artifacts:
@@ -54,7 +67,9 @@ pages:
 
 deploy_firebase:
   stage: deploy
-  needs: ["build"]
+  needs:
+    - job: build_firebase
+      artifacts: true
   variables:
     FIREBASE_PROJECT: "bo-soysb"
   script:
