@@ -4,4 +4,4 @@
 
 [build.environment]
   NODE_VERSION = "20.15.1"
-  BASE_URL = "https://sensornode.shop"
+  BASE_URL = "https://laundry-production-3969.up.railway.app"
