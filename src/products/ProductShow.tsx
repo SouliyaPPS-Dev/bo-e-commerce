@@ -29,6 +29,44 @@ import {
 import { useCurrencyContext } from '../components/CurrencySelector/CurrencyProvider';
 import { useLocaleState } from 'react-admin';
 
+const parseColorValues = (value: unknown): string[] => {
+  if (!value) {
+    return [];
+  }
+
+  if (Array.isArray(value)) {
+    return value
+      .filter((item) => item !== null && item !== undefined && item !== '')
+      .map((item) => String(item));
+  }
+
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    if (!trimmed) {
+      return [];
+    }
+    try {
+      const parsed = JSON.parse(trimmed);
+      if (Array.isArray(parsed)) {
+        return parsed
+          .filter((item) => item !== null && item !== undefined && item !== '')
+          .map((item) => String(item));
+      }
+    } catch {
+      // not JSON, proceed with comma-separated fallback
+    }
+    if (trimmed.includes(',')) {
+      return trimmed
+        .split(',')
+        .map((item) => item.trim())
+        .filter((item) => item.length > 0);
+    }
+    return [trimmed];
+  }
+
+  return [String(value)];
+};
+
 const ProductTitle = () => {
   const record = useRecordContext();
   const [locale] = useLocaleState();
@@ -237,6 +275,74 @@ const ProductShow = () => {
                     }}
                   />
                 </Box>
+
+                <FunctionField
+                  render={(record: any) =>
+                    record.old_price ? (
+                      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                        <Typography
+                          variant='h6'
+                          sx={{ fontSize: '1rem', fontWeight: 600, mr: 1 }}
+                        >
+                          {translate('old_price')}:
+                        </Typography>
+                        <NumberField
+                          record={record}
+                          source='old_price'
+                          sx={{
+                            fontSize: '1rem',
+                            fontWeight: 600,
+                          }}
+                        />
+                      </Box>
+                    ) : null
+                  }
+                />
+
+                <FunctionField
+                  render={(record: any) => {
+                    if (!record.sort_by) {
+                      return null;
+                    }
+                    return (
+                      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                        <Typography
+                          variant='h6'
+                          sx={{ fontSize: '1rem', fontWeight: 600, mr: 1 }}
+                        >
+                          {translate('sort_by')}:
+                        </Typography>
+                        <Typography variant='body1' sx={{ fontWeight: 500 }}>
+                          {record.sort_by}
+                        </Typography>
+                      </Box>
+                    );
+                  }}
+                />
+
+                <FunctionField
+                  render={(record: any) => {
+                    const colorValues = parseColorValues(record.colors);
+                    if (colorValues.length === 0) {
+                      return null;
+                    }
+                    return (
+                      <Box sx={{ mb: 2 }}>
+                        <Typography
+                          variant='h6'
+                          sx={{ fontSize: '1rem', fontWeight: 600, mb: 1 }}
+                        >
+                          {translate('colors')}:
+                        </Typography>
+                        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                          {colorValues.map((color) => (
+                            <Chip key={color} label={color} variant='outlined' />
+                          ))}
+                        </Box>
+                      </Box>
+                    );
+                  }}
+                />
               </CardContent>
             </Card>
 
@@ -321,6 +427,84 @@ const ProductShow = () => {
                       },
                     }}
                   />
+                </Box>
+              </CardContent>
+            </Card>
+
+            <Card sx={{ mb: 3 }}>
+              <CardContent>
+                <Typography variant='h5' sx={{ mb: 2, color: 'text.primary' }}>
+                  {translate('design_story')}
+                </Typography>
+                <Box sx={{ mb: 2 }}>
+                  <Typography
+                    variant='h6'
+                    sx={{ mb: 1, color: 'text.secondary' }}
+                  >
+                    {translate('english')}
+                  </Typography>
+                  <RichTextField source='design_story_en' />
+                </Box>
+                <Box>
+                  <Typography
+                    variant='h6'
+                    sx={{ mb: 1, color: 'text.secondary' }}
+                  >
+                    {translate('lao')}
+                  </Typography>
+                  <RichTextField source='design_story_la' />
+                </Box>
+              </CardContent>
+            </Card>
+
+            <Card sx={{ mb: 3 }}>
+              <CardContent>
+                <Typography variant='h5' sx={{ mb: 2, color: 'text.primary' }}>
+                  {translate('exceptional_quality')}
+                </Typography>
+                <Box sx={{ mb: 2 }}>
+                  <Typography
+                    variant='h6'
+                    sx={{ mb: 1, color: 'text.secondary' }}
+                  >
+                    {translate('english')}
+                  </Typography>
+                  <RichTextField source='exceptional_quality_en' />
+                </Box>
+                <Box>
+                  <Typography
+                    variant='h6'
+                    sx={{ mb: 1, color: 'text.secondary' }}
+                  >
+                    {translate('lao')}
+                  </Typography>
+                  <RichTextField source='exceptional_quality_la' />
+                </Box>
+              </CardContent>
+            </Card>
+
+            <Card sx={{ mb: 3 }}>
+              <CardContent>
+                <Typography variant='h5' sx={{ mb: 2, color: 'text.primary' }}>
+                  {translate('ethical_craft')}
+                </Typography>
+                <Box sx={{ mb: 2 }}>
+                  <Typography
+                    variant='h6'
+                    sx={{ mb: 1, color: 'text.secondary' }}
+                  >
+                    {translate('english')}
+                  </Typography>
+                  <RichTextField source='ethical_craft_en' />
+                </Box>
+                <Box>
+                  <Typography
+                    variant='h6'
+                    sx={{ mb: 1, color: 'text.secondary' }}
+                  >
+                    {translate('lao')}
+                  </Typography>
+                  <RichTextField source='ethical_craft_la' />
                 </Box>
               </CardContent>
             </Card>

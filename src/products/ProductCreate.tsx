@@ -16,6 +16,7 @@ import {
 import ImageUploadField from '../components/ImageUploadField';
 import { Divider } from '@mui/material';
 import { uploadImageToCloudinary } from '../utils/cloudinaryUpload';
+import ProductColorSelectInput from '../components/ProductColorSelectInput';
 
 const RichTextInput = React.lazy(() =>
   import('ra-input-rich-text').then((module) => ({
@@ -60,6 +61,14 @@ const ProductCreate = () => {
           label={translate('price')}
         />
 
+        <NumberInput
+          source='old_price'
+          min={0}
+          step={0.01}
+          fullWidth
+          label={translate('old_price')}
+        />
+
         <Divider sx={{ my: 0.2 }} />
 
         <NumberInput
@@ -71,11 +80,41 @@ const ProductCreate = () => {
           label={translate('total_count')}
         />
 
+        <NumberInput
+          source='sell_count'
+          min={0}
+          step={1}
+          fullWidth
+          label={translate('sell_count')}
+        />
+
         <Divider sx={{ my: 0.2 }} />
 
         <ReferenceInput source='category_id' reference='categories'>
           <SelectInput source='name' fullWidth validate={required()} />
         </ReferenceInput>
+
+        <Divider sx={{ my: 0.2 }} />
+
+        <ProductColorSelectInput
+          source='colors'
+          fullWidth
+          label={translate('colors')}
+        />
+
+        <Divider sx={{ my: 0.2 }} />
+
+        <SelectInput
+          source='sort_by'
+          fullWidth
+          label={translate('sort_by')}
+          choices={[
+            { id: 'Newest', name: translate('sort_newest') },
+            { id: 'Oldest', name: translate('sort_oldest') },
+            { id: 'Popular', name: translate('sort_popular') },
+          ]}
+          defaultValue='Newest'
+        />
 
         <Divider sx={{ my: 0.2 }} />
 
@@ -196,6 +235,66 @@ const ProductCreate = () => {
           <RichTextInput
             source='details_la'
             label={translate('details_la')}
+            fullWidth
+          />
+        </React.Suspense>
+
+        <Divider sx={{ my: 0.5 }} />
+
+        <React.Suspense fallback={<div>Loading...</div>}>
+          <RichTextInput
+            source='design_story_en'
+            label={translate('design_story_en')}
+            fullWidth
+          />
+        </React.Suspense>
+
+        <Divider sx={{ my: 0.2 }} />
+
+        <React.Suspense fallback={<div>Loading...</div>}>
+          <RichTextInput
+            source='design_story_la'
+            label={translate('design_story_la')}
+            fullWidth
+          />
+        </React.Suspense>
+
+        <Divider sx={{ my: 0.5 }} />
+
+        <React.Suspense fallback={<div>Loading...</div>}>
+          <RichTextInput
+            source='exceptional_quality_en'
+            label={translate('exceptional_quality_en')}
+            fullWidth
+          />
+        </React.Suspense>
+
+        <Divider sx={{ my: 0.2 }} />
+
+        <React.Suspense fallback={<div>Loading...</div>}>
+          <RichTextInput
+            source='exceptional_quality_la'
+            label={translate('exceptional_quality_la')}
+            fullWidth
+          />
+        </React.Suspense>
+
+        <Divider sx={{ my: 0.5 }} />
+
+        <React.Suspense fallback={<div>Loading...</div>}>
+          <RichTextInput
+            source='ethical_craft_en'
+            label={translate('ethical_craft_en')}
+            fullWidth
+          />
+        </React.Suspense>
+
+        <Divider sx={{ my: 0.2 }} />
+
+        <React.Suspense fallback={<div>Loading...</div>}>
+          <RichTextInput
+            source='ethical_craft_la'
+            label={translate('ethical_craft_la')}
             fullWidth
           />
         </React.Suspense>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLogin, useNotify, Login } from "react-admin";
 import {
   TextField,
@@ -7,20 +7,34 @@ import {
   Box,
   Paper,
   Container,
+  CircularProgress,
 } from "@mui/material";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const login = useLogin();
   const notify = useNotify();
+  const isMounted = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       await login({ email, password });
     } catch {
       notify("Invalid email or password", { type: "error" });
+    } finally {
+      if (isMounted.current) {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -57,9 +71,15 @@ const LoginPage = () => {
               fullWidth
               variant="contained"
               color="primary"
+              disabled={isLoading}
+              aria-busy={isLoading}
               sx={{ marginTop: 2 }}
             >
-              Login
+              {isLoading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "Login"
+              )}
             </Button>
           </Box>
         </Paper>

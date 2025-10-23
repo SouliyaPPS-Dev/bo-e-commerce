@@ -12,13 +12,22 @@ export interface ProductData {
   description: string;
   price: number;
   category_id: string;
-  image_url: string[];
+  image_url: string[] | string;
   name_la: string;
   description_la: string;
   details: string;
   details_la: string;
   total_count: number;
   sell_count: number;
+  old_price?: number;
+  design_story_en?: string;
+  design_story_la?: string;
+  exceptional_quality_en?: string;
+  exceptional_quality_la?: string;
+  ethical_craft_en?: string;
+  ethical_craft_la?: string;
+  sort_by?: string;
+  colors?: string | string[];
   is_delete: boolean;
   created: string;
   updated: string;
@@ -50,6 +59,101 @@ export interface ProductListResponse {
   data: ProductData[];
   total: number;
 }
+
+const normalizeImageUrls = (input: ProductData['image_url']): string[] => {
+  if (!input) {
+    return [];
+  }
+
+  if (Array.isArray(input)) {
+    return input
+      .map((url) => (url ? String(url).trim() : ''))
+      .filter((url) => url.length > 0);
+  }
+
+  if (typeof input === 'string') {
+    const trimmed = input.trim();
+    if (!trimmed) {
+      return [];
+    }
+    if (
+      (trimmed.startsWith('[') && trimmed.endsWith(']')) ||
+      (trimmed.startsWith('{') && trimmed.endsWith('}'))
+    ) {
+      try {
+        const parsed = JSON.parse(trimmed);
+        if (Array.isArray(parsed)) {
+          return parsed
+            .map((url) => (url ? String(url).trim() : ''))
+            .filter((url) => url.length > 0);
+        }
+      } catch {
+        // fall back to comma separated parsing
+      }
+    }
+    return trimmed
+      .split(',')
+      .map((url) => url.trim())
+      .filter((url) => url.length > 0);
+  }
+
+  return [];
+};
+
+const normalizeProductPayload = (
+  data: Partial<ProductData>,
+  isCreate = false
+): Record<string, any> => {
+  const {
+    id,
+    collectionId,
+    collectionName,
+    created,
+    updated,
+    ...rest
+  } = data;
+
+  const normalized: Record<string, any> = {
+    ...rest,
+    image_url: normalizeImageUrls(rest.image_url ?? []),
+    description: rest.description ?? '',
+    description_la: rest.description_la ?? '',
+    details: rest.details ?? '',
+    details_la: rest.details_la ?? '',
+    design_story_en: rest.design_story_en ?? '',
+    design_story_la: rest.design_story_la ?? '',
+    exceptional_quality_en: rest.exceptional_quality_en ?? '',
+    exceptional_quality_la: rest.exceptional_quality_la ?? '',
+    ethical_craft_en: rest.ethical_craft_en ?? '',
+    ethical_craft_la: rest.ethical_craft_la ?? '',
+    total_count: rest.total_count ?? 0,
+    sell_count: rest.sell_count ?? 0,
+    old_price:
+      rest.old_price !== undefined
+        ? rest.old_price
+        : rest.price !== undefined
+        ? rest.price
+        : 0,
+    sort_by: rest.sort_by || 'Newest',
+    colors: Array.isArray(rest.colors)
+      ? rest.colors[0] ?? ''
+      : rest.colors ?? '',
+  };
+
+  if (isCreate) {
+    normalized.is_delete = false;
+  }
+
+  return normalized;
+};
+
+const normalizeProductRecord = (record: any): ProductData => ({
+  ...record,
+  image_url: normalizeImageUrls(record.image_url),
+  colors: Array.isArray(record.colors)
+    ? record.colors[0] ?? ''
+    : record.colors ?? '',
+});
 
 export const productsDataProvider: any = {
   getList: async (
@@ -142,7 +246,7 @@ export const productsDataProvider: any = {
       });
 
       return {
-        data: result.items as ProductData[],
+        data: result.items.map((item: any) => normalizeProductRecord(item)),
         total: result.totalItems,
       };
     } catch (error) {
@@ -163,7 +267,7 @@ export const productsDataProvider: any = {
       if (record.is_delete) {
         throw new Error('Product not found'); // Or handle as appropriate for your UI
       }
-      return { data: record };
+      return { data: normalizeProductRecord(record) };
     } catch (error) {
       console.error('Error fetching product:', error);
       throw new Error('Failed to fetch product');
@@ -181,7 +285,10 @@ export const productsDataProvider: any = {
         .getList(1, params.ids.length, {
           filter: filterStr,
         });
-      return { data: result.items as ProductData[] };
+      const normalizedItems = result.items.map((item: any) =>
+        normalizeProductRecord(item)
+      );
+      return { data: normalizedItems };
     } catch (error) {
       console.error('Error fetching products:', error);
       throw new Error('Failed to fetch products');
@@ -220,7 +327,7 @@ export const productsDataProvider: any = {
       });
 
       return {
-        data: result.items as ProductData[],
+        data: result.items.map((item: any) => normalizeProductRecord(item)),
         total: result.totalItems,
       };
     } catch (error) {
@@ -234,15 +341,10 @@ export const productsDataProvider: any = {
     params: { data: Partial<ProductData> }
   ): Promise<{ data: ProductData }> => {
     try {
-      const id = await createPocketbaseDocument('products', {
-        ...params.data,
-        details_la: params.data.details_la || '',
-        total_count: params.data.total_count || 0,
-        sell_count: params.data.sell_count || 0,
-        is_delete: false,
-      });
+      const payload = normalizeProductPayload(params.data, true);
+      const id = await createPocketbaseDocument('products', payload);
       const record = await fetchPocketbaseDocument<ProductData>('products', id);
-      return { data: record };
+      return { data: normalizeProductRecord(record) };
     } catch (error) {
       console.error('Error creating product:', error);
       throw new Error('Failed to create product');
@@ -255,12 +357,10 @@ export const productsDataProvider: any = {
   ): Promise<{ data: ProductData }> => {
     const { id, data } = params;
     try {
-      await updatePocketbaseDocument('products', id, {
-        ...data,
-        details_la: data.details_la || '',
-      });
+      const payload = normalizeProductPayload(data);
+      await updatePocketbaseDocument('products', id, payload);
       const record = await fetchPocketbaseDocument<ProductData>('products', id);
-      return { data: record };
+      return { data: normalizeProductRecord(record) };
     } catch (error) {
       console.error('Error updating product:', error);
       throw new Error('Failed to update product');
