@@ -8,7 +8,7 @@ import * as React from 'react';
 import { useTranslate } from 'react-admin';
 import { Link } from 'react-router-dom';
 import { useCurrencyContext } from '../components/CurrencySelector/CurrencyProvider';
-import { formatCurrency } from '../utils/format';
+import { formatCurrencyByType } from '../utils/format';
 
 interface OrderStatusCount {
   pending: number;
@@ -172,11 +172,11 @@ const StatusCountCards: React.FC<Props> = ({
           title='dashboard.monthly_revenue'
           value={
             currency === 'USD' && sellRevenue?.totalUSD
-              ? `${formatCurrency(Number(sellRevenue?.totalUSD))} $`
+              ? formatCurrencyByType(Number(sellRevenue.totalUSD), 'USD')
               : currency === 'THB' && sellRevenue?.totalTHB
-              ? `${formatCurrency(Number(sellRevenue?.totalTHB))} ฿`
+              ? formatCurrencyByType(Number(sellRevenue.totalTHB), 'THB')
               : currency === 'LAK' && sellRevenue?.totalLAK
-              ? `${formatCurrency(Number(sellRevenue?.totalLAK))} ₭`
+              ? formatCurrencyByType(Number(sellRevenue.totalLAK), 'LAK')
               : ''
           }
           icon={

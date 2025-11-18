@@ -1,4 +1,5 @@
-import { localStorageData } from "./cache";
+import { localStorageData } from './cache';
+import { Currency } from '../types';
 
 export const formatCurrency = (value: number, locale = 'en-US') => {
   const formattedValue = new Intl.NumberFormat(locale, {
@@ -15,6 +16,43 @@ export const formatCurrency = (value: number, locale = 'en-US') => {
   }
 
   return formattedValue;
+};
+
+const currencyLocales: Record<Currency, string> = {
+  USD: 'en-US',
+  THB: 'th-TH',
+  LAK: 'lo-LA',
+};
+
+const currencySymbols: Record<Currency, string> = {
+  USD: '$',
+  THB: '฿',
+  LAK: '₭',
+};
+
+interface CurrencyFormatOptions {
+  withSymbol?: boolean;
+}
+
+export const formatCurrencyByType = (
+  value: number,
+  currency: Currency | string,
+  options?: CurrencyFormatOptions
+) => {
+  const normalizedCurrency = currency as Currency;
+  const locale = currencyLocales[normalizedCurrency] || 'en-US';
+  const formatter = new Intl.NumberFormat(locale, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+  const formatted = formatter.format(value);
+
+  if (options?.withSymbol === false) {
+    return formatted;
+  }
+
+  const symbol = currencySymbols[normalizedCurrency] || currency;
+  return `${symbol}${formatted}`;
 };
 
 export const formattedDate = (date: string) => {

@@ -296,6 +296,7 @@ const UserList = () => {
       title={<UserTitle />}
     >
       <DataTable
+        bulkActionButtons={false}
         rowClick='edit'
         sx={{
           '& .column-phone_number': {

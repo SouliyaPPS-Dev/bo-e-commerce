@@ -50,7 +50,7 @@ const CurrencyList = () => {
       actions={<CurrencyListActions />}
       sort={{ field: 'updated', order: 'DESC' }}
     >
-      <Datagrid>
+      <Datagrid bulkActionButtons={false}>
         <TextField source='ccy' label={translate('ccy')} />
         <TextField source='type' label={translate('type')} />
         <NumberField source='rate' label={translate('rate')} />

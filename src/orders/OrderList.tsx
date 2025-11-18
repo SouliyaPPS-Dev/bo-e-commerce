@@ -46,6 +46,7 @@ import WhatsAppIcon from '../components/icons/WhatsAppIcon';
 
 import pb from '../api/pocketbase';
 import { useCurrencyContext } from '../components/CurrencySelector/CurrencyProvider'; // Import useCurrencyContext
+import { formatCurrencyByType } from '../utils/format';
 import {
   PBAddress,
   PBCustomer,
@@ -409,29 +410,19 @@ const OrderDetail: React.FC<{
 
   const totals = calculateTotals();
 
-  const formatCurrency = (amount: number, currencyType: string) => {
-    switch (currencyType) {
-      case 'LAK':
-        return `₭${amount.toLocaleString()}`;
-      case 'USD':
-        return `$${amount.toFixed(2)}`;
-      case 'THB':
-        return `฿${amount.toFixed(2)}`;
-      default:
-        return amount.toString();
-    }
-  };
+  const formatAmount = (amount: number, currencyType: string) =>
+    formatCurrencyByType(amount, currencyType);
 
   const getCurrentTotal = () => {
     switch (currency) {
       case 'LAK':
-        return formatCurrency(totals.lak, 'LAK');
+        return formatAmount(totals.lak, 'LAK');
       case 'USD':
-        return formatCurrency(totals.usd, 'USD');
+        return formatAmount(totals.usd, 'USD');
       case 'THB':
-        return formatCurrency(totals.thb, 'THB');
+        return formatAmount(totals.thb, 'THB');
       default:
-        return formatCurrency(totals.usd, 'USD');
+        return formatAmount(totals.usd, 'USD');
     }
   };
 
@@ -790,10 +781,10 @@ const OrderDetail: React.FC<{
                                           {item.quantity}
                                         </TableCell>
                                         <TableCell align='right'>
-                                          {formatCurrency(price, currency)}
+                                          {formatAmount(price, currency)}
                                         </TableCell>
                                         <TableCell align='right'>
-                                          {formatCurrency(total, currency)}
+                                          {formatAmount(total, currency)}
                                         </TableCell>
                                         <TableCell align='right'>
                                           {order.status !== 'pending'
@@ -843,7 +834,7 @@ const OrderDetail: React.FC<{
                                 {translate('lak')}
                               </Typography>
                               <Typography variant='body2' fontWeight='bold'>
-                                {formatCurrency(totals.lak, 'LAK')}
+                                {formatAmount(totals.lak, 'LAK')}
                               </Typography>
                             </Box>
                             <Box
@@ -856,7 +847,7 @@ const OrderDetail: React.FC<{
                                 {translate('usd')}
                               </Typography>
                               <Typography variant='body2' fontWeight='bold'>
-                                {formatCurrency(totals.usd, 'USD')}
+                                {formatAmount(totals.usd, 'USD')}
                               </Typography>
                             </Box>
                             <Box
@@ -869,7 +860,7 @@ const OrderDetail: React.FC<{
                                 {translate('thb')}
                               </Typography>
                               <Typography variant='body2' fontWeight='bold'>
-                                {formatCurrency(totals.thb, 'THB')}
+                                {formatAmount(totals.thb, 'THB')}
                               </Typography>
                             </Box>
                             <Divider sx={{ my: 1 }} />

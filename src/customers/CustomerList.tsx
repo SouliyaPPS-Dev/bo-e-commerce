@@ -240,6 +240,7 @@ const CustomerList = () => {
       title={<CustomerTitle />}
     >
       <DataTable
+        bulkActionButtons={false}
         rowClick='show'
         sx={{
           '& .column-avatar': {

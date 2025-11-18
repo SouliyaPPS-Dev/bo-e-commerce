@@ -18,7 +18,7 @@ import { format, parseISO } from 'date-fns';
 import * as React from 'react';
 import { useTranslate } from 'react-admin';
 import { useCurrencyContext } from '../components/CurrencySelector/CurrencyProvider';
-import { formatCurrency } from '../utils/format';
+import { formatCurrencyByType } from '../utils/format';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import pb from '../api/pocketbase';
@@ -260,17 +260,20 @@ const OrderPendingRow: React.FC<{
         <Box>
           <Typography variant='body2' fontWeight='medium'>
             {currency === 'USD' && order?.amountUSD
-              ? `${formatCurrency(
-                  Number(order?.amountUSD) * order?.quantity
-                )} $`
+              ? formatCurrencyByType(
+                  Number(order?.amountUSD) * order?.quantity,
+                  'USD'
+                )
               : currency === 'THB' && order?.amountTHB
-              ? `${formatCurrency(
-                  Number(order?.amountTHB) * order?.quantity
-                )} ฿`
+              ? formatCurrencyByType(
+                  Number(order?.amountTHB) * order?.quantity,
+                  'THB'
+                )
               : currency === 'LAK' && order?.amountLAK
-              ? `${formatCurrency(
-                  Number(order?.amountLAK) * order?.quantity
-                )} ₭`
+              ? formatCurrencyByType(
+                  Number(order?.amountLAK) * order?.quantity,
+                  'LAK'
+                )
               : ''}
           </Typography>
         </Box>
@@ -302,18 +305,8 @@ const OrderDetail: React.FC<{ details: any }> = ({ details }) => {
   const { currency } = useCurrencyContext();
   const translate = useTranslate();
 
-  const formatCurrencyValue = (amount: number, currencyType: string) => {
-    switch (currencyType) {
-      case 'LAK':
-        return `₭${amount.toLocaleString()}`;
-      case 'USD':
-        return `${amount.toFixed(2)}`;
-      case 'THB':
-        return `฿${amount.toFixed(2)}`;
-      default:
-        return amount.toString();
-    }
-  };
+  const formatCurrencyValue = (amount: number, currencyType: string) =>
+    formatCurrencyByType(amount, currencyType);
 
   return (
     <Box>

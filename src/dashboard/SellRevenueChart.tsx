@@ -17,6 +17,7 @@ import {
   YAxis,
 } from 'recharts';
 import { useCurrencyContext } from '../components/CurrencySelector/CurrencyProvider';
+import { formatCurrencyByType } from '../utils/format';
 import RevenueFilter from './RevenueFilter';
 import { useTranslate } from 'react-admin';
 
@@ -210,7 +211,7 @@ const SellRevenueChart: React.FC<Props> = ({
                 LAK
               </Typography>
               <Typography variant='h6' color='#a67c00'>
-                {totalLAK.toLocaleString()} ₭
+                {formatCurrencyByType(totalLAK, 'LAK')}
               </Typography>
             </Box>
           </Grid>
@@ -232,7 +233,7 @@ const SellRevenueChart: React.FC<Props> = ({
                 USD
               </Typography>
               <Typography variant='h6' color='#a67c00'>
-                ${totalUSD.toFixed(2)}
+                {formatCurrencyByType(totalUSD, 'USD')}
               </Typography>
             </Box>
           </Grid>
@@ -254,7 +255,7 @@ const SellRevenueChart: React.FC<Props> = ({
                 THB
               </Typography>
               <Typography variant='h6' color='#a67c00'>
-                ฿{totalTHB.toFixed(2)}
+                {formatCurrencyByType(totalTHB, 'THB')}
               </Typography>
             </Box>
           </Grid>
