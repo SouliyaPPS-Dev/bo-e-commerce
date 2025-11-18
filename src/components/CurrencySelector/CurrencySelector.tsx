@@ -48,6 +48,17 @@ const CurrencySelector: React.FC<CurrencySelectorProps> = ({
     () => currencies?.filter((item) => item.type === 'SELL'),
     [currencies]
   );
+  const availableCurrencies = filteredCurrencies ?? [];
+  const hasValidCurrency = availableCurrencies.some(
+    (item) => item.ccy === currency
+  );
+  const selectValue = hasValidCurrency ? currency : '';
+
+  React.useEffect(() => {
+    if (!hasValidCurrency && availableCurrencies.length > 0) {
+      setCurrency(availableCurrencies[0].ccy);
+    }
+  }, [availableCurrencies, hasValidCurrency, setCurrency]);
 
   const IconComponent = React.useMemo(
     () => () =>
@@ -72,9 +83,11 @@ const CurrencySelector: React.FC<CurrencySelectorProps> = ({
           onOpen={() => setOpen(true)}
           onClose={() => setOpen(false)}
           IconComponent={IconComponent}
-          value={currency}
+          value={selectValue}
           onChange={handleCurrencyChange}
           variant={variant}
+          displayEmpty
+          disabled={availableCurrencies.length === 0}
           sx={{
             cursor: 'pointer',
             '& .MuiSelect-select': {
@@ -93,7 +106,12 @@ const CurrencySelector: React.FC<CurrencySelectorProps> = ({
             },
           }}
         >
-          {filteredCurrencies?.map((currency) => (
+          {availableCurrencies.length === 0 && (
+            <MenuItem value='' disabled>
+              Loading...
+            </MenuItem>
+          )}
+          {availableCurrencies.map((currency) => (
             <MenuItem key={currency.id} value={currency.ccy}>
               <Box display='flex' alignItems='center' gap={1}>
                 <Typography>{currency.ccy}</Typography>

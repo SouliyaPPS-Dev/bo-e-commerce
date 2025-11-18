@@ -162,6 +162,7 @@ interface OrderDetailsCache {
     products: { [key: string]: PBProduct };
     provinceName: string | null;
     districtName: string | null;
+    isLoaded: boolean;
   };
 }
 
@@ -995,6 +996,7 @@ const OrdersTable = React.memo(
               products: {},
               provinceName: null,
               districtName: null,
+              isLoaded: false,
             };
           })
         );
@@ -1013,7 +1015,8 @@ const OrdersTable = React.memo(
 
     const fetchOrderDetails = useCallback(
       async (orderId: string) => {
-        if (detailsCache[orderId] && detailsCache[orderId].customer) return;
+        const cacheEntry = detailsCache[orderId];
+        if (cacheEntry?.isLoaded) return;
 
         try {
           const order = orders.find((o) => o.id === orderId);
@@ -1096,6 +1099,7 @@ const OrdersTable = React.memo(
               products,
               provinceName,
               districtName,
+              isLoaded: true,
             },
           }));
         } catch (err) {
