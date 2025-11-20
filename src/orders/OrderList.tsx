@@ -760,10 +760,15 @@ const OrderDetail: React.FC<{
                                             >
                                               <img
                                                 src={product.image_url[0]}
-                                                alt={product.name}
+                                                alt={
+                                                  product?.name ||
+                                                  translate('product_image')
+                                                }
+                                                loading='lazy'
+                                                decoding='async'
+                                                width={50}
+                                                height={50}
                                                 style={{
-                                                  width: 50,
-                                                  height: 50,
                                                   objectFit: 'cover',
                                                 }}
                                               />

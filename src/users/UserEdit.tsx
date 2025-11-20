@@ -213,7 +213,11 @@ const AvatarDisplay = () => {
     <img
       src={record.avatar}
       alt={translate('user_avatar')}
-      style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover' }}
+      loading='lazy'
+      decoding='async'
+      width={80}
+      height={80}
+      style={{ borderRadius: '50%', objectFit: 'cover' }}
     />
   );
 };

@@ -179,8 +179,15 @@ export const BlogEdit = () => {
               {formData.image_url && (
                 <img
                   src={formData.image_url}
-                  alt='Preview'
-                  style={{ marginTop: 16, maxWidth: '100%', height: 'auto' }}
+                  alt={formData.title || 'Blog preview'}
+                  loading='lazy'
+                  decoding='async'
+                  style={{
+                    marginTop: 16,
+                    maxWidth: '100%',
+                    height: 'auto',
+                    borderRadius: 8,
+                  }}
                 />
               )}
               <div dangerouslySetInnerHTML={{ __html: formData.description }} />

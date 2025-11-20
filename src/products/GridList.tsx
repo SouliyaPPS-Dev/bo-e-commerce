@@ -60,44 +60,66 @@ const LoadedGridList = () => {
 
     return (
         <ImageList rowHeight={180} cols={cols} sx={{ m: 0 }}>
-            {data.map(record => (
-                <ImageListItem
-                    component={Link}
-                    key={record.id}
-                    to={createPath({
-                        resource: 'products',
-                        id: record.id,
-                        type: 'edit',
-                    })}
-                >
-                    <img src={record.thumbnail} alt="" />
-                    <ImageListItemBar
-                        title={record.reference}
-                        subtitle={
-                            <span>
-                                {record.width}x{record.height},{' '}
-                                <NumberField
-                                    source="price"
-                                    record={record}
-                                    color="inherit"
-                                    options={{
-                                        style: 'currency',
-                                        currency: 'USD',
-                                    }}
-                                    sx={{
-                                        display: 'inline',
-                                        fontSize: '1em',
-                                    }}
-                                />
-                            </span>
-                        }
-                        sx={{
-                            background:
-                                'linear-gradient(to top, rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.4) 70%,rgba(0,0,0,0) 100%)',
-                        }}
-                    />
-                </ImageListItem>
-            ))}
+            {data.map(record => {
+                const fallbackDimension = 300;
+                const naturalWidth = Number(record.width) || fallbackDimension;
+                const naturalHeight = Number(record.height) || fallbackDimension;
+                const imageAlt =
+                    record.reference ||
+                    record.name ||
+                    'Product thumbnail';
+                return (
+                    <ImageListItem
+                        component={Link}
+                        key={record.id}
+                        to={createPath({
+                            resource: 'products',
+                            id: record.id,
+                            type: 'edit',
+                        })}
+                    >
+                        <img
+                            src={record.thumbnail}
+                            alt={imageAlt}
+                            loading="lazy"
+                            decoding="async"
+                            width={naturalWidth}
+                            height={naturalHeight}
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'cover',
+                            }}
+                            sizes="(min-width:1536px) 12vw, (min-width:1200px) 16vw, (min-width:900px) 25vw, (min-width:600px) 33vw, 50vw"
+                        />
+                        <ImageListItemBar
+                            title={record.reference}
+                            subtitle={
+                                <span>
+                                    {record.width}x{record.height},{' '}
+                                    <NumberField
+                                        source="price"
+                                        record={record}
+                                        color="inherit"
+                                        options={{
+                                            style: 'currency',
+                                            currency: 'USD',
+                                        }}
+                                        sx={{
+                                            display: 'inline',
+                                            fontSize: '1em',
+                                        }}
+                                    />
+                                </span>
+                            }
+                            sx={{
+                                background:
+                                    'linear-gradient(to top, rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.4) 70%,rgba(0,0,0,0) 100%)',
+                            }}
+                        />
+                    </ImageListItem>
+                );
+            })}
         </ImageList>
     );
 };

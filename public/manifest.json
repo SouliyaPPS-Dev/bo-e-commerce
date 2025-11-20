@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "LF Admin",
+  "name": "Lao Fashion Admin Console",
   "icons": [
     {
       "src": "favicon.ico",
@@ -8,8 +8,11 @@
       "type": "image/x-icon"
     }
   ],
-  "start_url": "./index.html",
+  "start_url": "/",
   "display": "standalone",
+  "orientation": "portrait",
+  "lang": "en",
   "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "background_color": "#fafafa",
+  "description": "Monitor orders, products, and user engagement for Lao Fashion's ecommerce platform."
 }

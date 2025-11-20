@@ -22,7 +22,15 @@ export const ImageUrlField = ({
   const record = useRecordContext<Blogs>();
   if (!record?.image_url) return null;
 
-  return <img src={record.image_url} alt={record.collectionName} />;
+  return (
+    <img
+      src={record.image_url}
+      alt={record.collectionName || record.title}
+      loading='lazy'
+      decoding='async'
+      style={{ width: '100%', height: 'auto', borderRadius: 8 }}
+    />
+  );
 };
 
 const BlogShowActions = () => (

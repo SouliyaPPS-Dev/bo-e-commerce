@@ -18,6 +18,7 @@ interface ImageUploadFieldProps {
 const ImageUploadField = (props: ImageUploadFieldProps) => {
   const translate = useTranslate();
   const { source, label } = props;
+  const previewAlt = label ? `${label} preview` : 'Image preview';
   const record = useRecordContext(props);
   const { field } = useInput({
     source,
@@ -80,7 +81,11 @@ const ImageUploadField = (props: ImageUploadFieldProps) => {
         {field.value && typeof field.value === 'string' && (
           <img
             src={field.value}
-            alt='Preview'
+            alt={previewAlt}
+            loading='lazy'
+            decoding='async'
+            width={100}
+            height={100}
             style={{
               maxWidth: '100%',
               maxHeight: '100%',
