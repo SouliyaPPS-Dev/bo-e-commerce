@@ -4,4 +4,4 @@
 
 [build.environment]
   NODE_VERSION = "20.15.1"
-  BASE_URL = "http://5.161.45.56:8090"
+  BASE_URL = "https://api.sensornode.shop"

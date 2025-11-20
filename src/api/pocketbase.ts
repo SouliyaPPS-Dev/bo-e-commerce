@@ -1,6 +1,6 @@
 import PocketBase from 'pocketbase';
 
-const pb = new PocketBase('http://5.161.45.56:8090');
+const pb = new PocketBase('https://api.sensornode.shop');
 // const pb = new PocketBase('http://localhost:8080');
 pb.autoCancellation(false);
 
