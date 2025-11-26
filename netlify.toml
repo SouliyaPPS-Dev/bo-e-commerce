@@ -4,4 +4,4 @@
 
 [build.environment]
   NODE_VERSION = "20.15.1"
-  BASE_URL = "https://api.sensornode.shop"
+  BASE_URL = "https://api.soysb.com"
