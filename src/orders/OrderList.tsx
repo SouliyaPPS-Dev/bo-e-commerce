@@ -7,6 +7,7 @@ import {
 } from '@mui/icons-material';
 import {
   Alert,
+  Avatar,
   Box,
   Button,
   Card,
@@ -438,7 +439,18 @@ const OrderDetail: React.FC<{
           </Box>
         </TableCell>
         <TableCell>{order.reference_id}</TableCell>
-        <TableCell>{order.customer_name}</TableCell>
+        <TableCell>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            {details?.customer?.avatar && (
+              <Avatar
+                src={details.customer.avatar}
+                alt={order.customer_name}
+                sx={{ width: 36, height: 36 }}
+              />
+            )}
+            <Typography variant='body2'>{order.customer_name}</Typography>
+          </Box>
+        </TableCell>
         <TableCell>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             {order.phone_number}
