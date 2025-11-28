@@ -1,6 +1,6 @@
 {
   "short_name": "LF Admin",
-  "name": "Lao Fashion Admin Console",
+  "name": "Soy S. Brown Admin Console",
   "icons": [
     {
       "src": "favicon.ico",
@@ -14,5 +14,5 @@
   "lang": "en",
   "theme_color": "#000000",
   "background_color": "#fafafa",
-  "description": "Monitor orders, products, and user engagement for Lao Fashion's ecommerce platform."
+  "description": "Monitor orders, products, and user engagement for Soy S. Brown's ecommerce platform."
 }
