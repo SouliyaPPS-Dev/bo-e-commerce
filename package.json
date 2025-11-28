@@ -3,7 +3,7 @@
     "version": "5.0.0",
     "private": true,
     "type": "module",
-    "homepage": "https://lao-fashion.github.io/bo/",
+    "homepage": "./",
     "dependencies": {
         "@apollo/client": "^3.12.4",
         "@emotion/react": "^11.14.0",
