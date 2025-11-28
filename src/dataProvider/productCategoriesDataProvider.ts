@@ -4,6 +4,7 @@ import {
   CLOUDINARY_UPLOAD_PRESET,
   CLOUDINARY_URL,
 } from '../utils/cloudinaryKey';
+import { useImageStore } from '../store/imageStore';
 
 export interface ProductCategory {
   id: string;
@@ -88,9 +89,7 @@ export const productCategoriesDataProvider: Partial<DataProvider> = {
       });
 
       // Clear image store after successful upload
-      const { useImageStore } = await import('../store/imageStore');
-      const { getState } = useImageStore;
-      getState().clearImageState();
+      useImageStore.getState().clearImageState();
 
       return { data: record as any };
     } else {
@@ -121,9 +120,7 @@ export const productCategoriesDataProvider: Partial<DataProvider> = {
       });
 
       // Clear image store after successful upload
-      const { useImageStore } = await import('../store/imageStore');
-      const { getState } = useImageStore;
-      getState().clearImageState();
+      useImageStore.getState().clearImageState();
 
       return { data: record as any };
     } else {
