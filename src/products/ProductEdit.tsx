@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect } from 'react';
 import {
   ArrayInput,
   Edit,
@@ -21,6 +22,8 @@ import Divider from '@mui/material/Divider';
 import ImageUploadField from '../components/ImageUploadField';
 import { uploadImageToCloudinary } from '../utils/cloudinaryUpload';
 import ProductColorSelectInput from '../components/ProductColorSelectInput';
+import { useImageStore } from '../store/imageStore';
+import { useLocation } from 'react-router-dom';
 
 const RichTextInput = React.lazy(() =>
   import('ra-input-rich-text').then((module) => ({
@@ -41,8 +44,25 @@ const ProductTitle = () => {
 
 const ProductEdit = () => {
   const translate = useTranslate();
+  const { setSelectImage } = useImageStore();
+  const location = useLocation();
+
+  useEffect(() => {
+    // Clear image store when route changes
+    setSelectImage(null);
+  }, [location.pathname, setSelectImage]);
+
   return (
-    <Edit title={<ProductTitle />}>
+    <Edit
+      title={<ProductTitle />}
+      mutationMode='pessimistic'
+      mutationOptions={{
+        onSuccess: () => {
+          // Clear the image store after successful update
+          setSelectImage(null);
+        },
+      }}
+    >
       <SimpleForm sx={{ maxWidth: '40em' }} toolbar={<ProductEditFormToolbar />}>
         <TextInput
           source='name'

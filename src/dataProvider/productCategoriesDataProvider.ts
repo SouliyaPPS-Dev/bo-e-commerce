@@ -87,6 +87,11 @@ export const productCategoriesDataProvider: Partial<DataProvider> = {
         image_url: cloudinaryData.secure_url,
       });
 
+      // Clear image store after successful upload
+      const { useImageStore } = await import('../store/imageStore');
+      const { getState } = useImageStore;
+      getState().clearImageState();
+
       return { data: record as any };
     } else {
       const record = await pb.collection(COLLECTION_NAME).create(rest);
@@ -114,6 +119,11 @@ export const productCategoriesDataProvider: Partial<DataProvider> = {
         ...rest,
         image_url: cloudinaryData.secure_url,
       });
+
+      // Clear image store after successful upload
+      const { useImageStore } = await import('../store/imageStore');
+      const { getState } = useImageStore;
+      getState().clearImageState();
 
       return { data: record as any };
     } else {

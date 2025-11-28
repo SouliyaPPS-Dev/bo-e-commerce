@@ -1,15 +1,15 @@
 import { Divider } from '@mui/material';
-import { lazy } from 'react';
+import { lazy, useEffect } from 'react';
 import {
   Create,
-  ImageField,
-  ImageInput,
   required,
   SimpleForm,
   TextInput,
   useTranslate,
 } from 'react-admin';
 import { uploadImageToCloudinary } from '../utils/cloudinaryUpload';
+import ImageInputWithPreview from '../components/ImageInputWithPreview';
+import { useImageStore } from '../store/imageStore';
 
 const RichTextInput = lazy(() =>
   import('ra-input-rich-text').then((m) => ({ default: m.RichTextInput }))
@@ -17,9 +17,23 @@ const RichTextInput = lazy(() =>
 
 export const BlogCreate = () => {
   const translate = useTranslate();
+  const { setSelectImage } = useImageStore();
+
+  useEffect(() => {
+    // Clear image store when component mounts
+    setSelectImage(null);
+  }, [setSelectImage]);
 
   return (
-    <Create>
+    <Create
+      mutationMode='pessimistic'
+      mutationOptions={{
+        onSuccess: () => {
+          // Clear the image store after successful creation
+          setSelectImage(null);
+        },
+      }}
+    >
       <SimpleForm>
         <TextInput
           source='title'
@@ -30,9 +44,13 @@ export const BlogCreate = () => {
 
         <Divider sx={{ my: 0.2 }} />
 
-        <ImageInput source='image' label={translate('resources.blogs.fields.image')} placeholder={translate('image_input_placeholder')}>
-          <ImageField source='src' title='title' />
-        </ImageInput>
+        <ImageInputWithPreview
+          source='image'
+          label={translate('resources.blogs.fields.image')}
+          onImageSelect={() => {
+            // This will be called when image is selected
+          }}
+        />
 
         <Divider sx={{ my: 0.2 }} />
 

@@ -491,6 +491,8 @@ const customEnglishMessages: TranslationMessages = {
         name_la: 'Lao Name',
         image: 'Category Image',
         current_image: 'Current Image',
+        new_image: 'New Image',
+        new_image_hint: 'Click save to upload this image',
         price: 'Price',
       },
       notifications: {

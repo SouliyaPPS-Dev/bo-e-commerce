@@ -3,7 +3,6 @@ import {
   Edit,
   EditButton,
   ImageField,
-  ImageInput,
   Labeled,
   ReferenceManyField,
   SimpleForm,
@@ -25,7 +24,8 @@ import {
   useCurrencyContext,
 } from '../components/CurrencySelector/CurrencyProvider';
 import ThumbnailField from '../products/ThumbnailField';
-import { useImageStore } from '../store/imageStore'; // Import the store
+import { useImageStore } from '../store/imageStore';
+import CategoryImageInput from './CategoryImageInput';
 import { type Product } from '../types';
 
 export interface ProductCategory {
@@ -58,7 +58,7 @@ const CategoryEditActions = () => <TopToolbar />;
 
 const CategoryEdit = () => {
   const { displayCurrency, convert } = useCurrencyContext();
-  const { selectImage, setSelectImage } = useImageStore(); // Use the store
+  const { setSelectImage } = useImageStore();
   const refresh = useRefresh();
   const translate = useTranslate();
 
@@ -70,7 +70,17 @@ const CategoryEdit = () => {
   }, [location.pathname, setSelectImage]);
 
   return (
-    <Edit title={<CategoryTitle />} actions={<CategoryEditActions />}>
+    <Edit
+      title={<CategoryTitle />}
+      actions={<CategoryEditActions />}
+      mutationMode='pessimistic'
+      mutationOptions={{
+        onSuccess: () => {
+          // Clear the image store after successful update
+          setSelectImage(null);
+        },
+      }}
+    >
       <SimpleForm toolbar={<CategoryEditFormToolbar />}>
         <Box
           display='flex'
@@ -91,21 +101,11 @@ const CategoryEdit = () => {
             source='name_la'
             label={translate('resources.categories.fields.name_la')}
           />
-          <ImageInput
+          <CategoryImageInput
             source='image'
             label={translate('resources.categories.fields.image')}
-            onChange={(e) => {
-              setSelectImage(e);
-            }}
-          >
-            <ImageField source='src' title='title' />
-          </ImageInput>
-
-          <ImageField
-            source='image_url'
-            label={translate('resources.categories.fields.current_image')}
-            sx={{
-              display: selectImage !== null ? 'none' : 'block',
+            onImageSelect={() => {
+              // This will be called when image is selected
             }}
           />
 

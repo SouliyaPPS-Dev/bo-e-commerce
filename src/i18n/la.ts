@@ -45,7 +45,7 @@ const customLaoMessages: TranslationMessages = {
   upload_image_success: 'ສຳເນົາລິ້ງຮູບພາບສຳເລັດແລ້ວ!',
   upload_image_failure: 'ອັບໂຫລດຮູບພາບບໍ່ສຳເລັດ',
   preview: 'ເບິ່ງຕົວຢ່າງ',
-  image_input_placeholder: 'ລາກຮູບພາບເພື່ອອັບໂຫລດ, ຫຼືຄລິກເພື່ອເລືອກ.',
+  image_input_placeholder: 'ລາກຮູບມາລົງ, ຫຼື ຄລິກເພື່ອເລືອກມັນ.',
   details_la: 'ລາຍລະອຽດ (ລາວ)',
   image_urls: 'ລິ້ງຮູບພາບ',
   image_url: 'ລິ້ງຮູບພາບ',
@@ -493,6 +493,8 @@ const customLaoMessages: TranslationMessages = {
         name_la: 'ຊື່ພາສາລາວ',
         image: 'ຮູບພາບໝວດໝູ່',
         current_image: 'ຮູບພາບປັດຈຸບັນ',
+        new_image: 'ຮູບພາບໃໝ່',
+        new_image_hint: 'ຄລິກບັນທຶກເພື່ອອັບໂຫລດຮູບພາບນີ້',
         price: 'ລາຄາ',
       },
       notifications: {

@@ -3,8 +3,6 @@ import {
   DeleteButton,
   Edit,
   FormDataConsumer,
-  ImageField,
-  ImageInput,
   NumberInput,
   required,
   ShowButton,
@@ -21,6 +19,7 @@ import { useImageStore } from '../store/imageStore';
 import { useLocation } from 'react-router';
 import { uploadImageToCloudinary } from '../utils/cloudinaryUpload';
 import { Divider } from '@mui/material';
+import ImageInputWithPreview from '../components/ImageInputWithPreview';
 
 const RichTextInput = lazy(() =>
   import('ra-input-rich-text').then((m) => ({ default: m.RichTextInput }))
@@ -52,21 +51,11 @@ export const BlogEdit = () => {
 
         <Divider sx={{ my: 0.2 }} />
 
-        <ImageInput
+        <ImageInputWithPreview
           source='image'
           label={translate('resources.blogs.fields.image')}
-          onChange={(e) => {
-            setSelectImage(e);
-          }}
-          placeholder={translate('image_input_placeholder')}
-        >
-          <ImageField source='src' title='title' />
-        </ImageInput>
-        <ImageField
-          source='image_url'
-          label={translate('resources.blogs.fields.current_image')}
-          sx={{
-            display: selectImage !== null ? 'none' : 'block',
+          onImageSelect={() => {
+            // This will be called when image is selected
           }}
         />
 

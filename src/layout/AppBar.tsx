@@ -9,7 +9,24 @@ const CustomAppBar = () => {
   );
   return (
     <AppBar color='secondary' toolbar={<AppBarToolbar />}>
-      <TitlePortal />
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 2,
+        }}
+      >
+        <img
+          src='/logo.png'
+          alt='Logo'
+          style={{
+            height: 40,
+            width: 'auto',
+            objectFit: 'contain',
+          }}
+        />
+        <TitlePortal />
+      </Box>
       {isLargeEnough && <Box component='span' sx={{ flex: 1 }} />}
     </AppBar>
   );

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect } from 'react';
 import {
   Create,
   SimpleForm,
@@ -17,6 +18,7 @@ import ImageUploadField from '../components/ImageUploadField';
 import { Divider } from '@mui/material';
 import { uploadImageToCloudinary } from '../utils/cloudinaryUpload';
 import ProductColorSelectInput from '../components/ProductColorSelectInput';
+import { useImageStore } from '../store/imageStore';
 
 const RichTextInput = React.lazy(() =>
   import('ra-input-rich-text').then((module) => ({
@@ -38,8 +40,24 @@ const ProductTitle = () => {
 
 const ProductCreate = () => {
   const translate = useTranslate();
+  const { setSelectImage } = useImageStore();
+
+  useEffect(() => {
+    // Clear image store when component mounts
+    setSelectImage(null);
+  }, [setSelectImage]);
+
   return (
-    <Create title={<ProductTitle />}>
+    <Create
+      title={<ProductTitle />}
+      mutationMode='pessimistic'
+      mutationOptions={{
+        onSuccess: () => {
+          // Clear the image store after successful creation
+          setSelectImage(null);
+        },
+      }}
+    >
       <SimpleForm sx={{ maxWidth: '40em' }}>
         <TextInput
           autoFocus
