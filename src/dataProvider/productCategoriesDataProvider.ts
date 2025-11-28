@@ -17,6 +17,7 @@ export interface ProductCategory {
   updated: string;
 }
 
+
 const COLLECTION_NAME = 'product_categories';
 
 export const productCategoriesDataProvider: Partial<DataProvider> = {
