@@ -2,6 +2,8 @@ import { DataProvider } from 'react-admin';
 import { blogService } from '../api/blogsService';
 import { uploadImageToCloudinary } from '../utils/cloudinaryUpload';
 
+const PLACEHOLDER_IMAGE_URL = 'https://png.pngtree.com/png-vector/20210604/ourmid/pngtree-gray-network-placeholder-png-image_3416659.jpg';
+
 export const blogsDataProvider: Partial<DataProvider> = {
   getList: async (resource, params) => {
     if (resource !== 'blogs') return { data: [], total: 0 };
@@ -66,21 +68,20 @@ export const blogsDataProvider: Partial<DataProvider> = {
     if (resource !== 'blogs') return { data: {} as any };
 
     const { image, description_la, ...rest } = params.data;
-    let imageUrl = rest.image_url; // Keep existing URL by default
-
-    if (image && image.rawFile) {
-      imageUrl = await uploadImageToCloudinary(image.rawFile);
-    } else if (image === null) {
-      imageUrl = ''; // Clear the image
-    }
-
-    const dataToUpdate = {
+    const payload: { [key: string]: any } = {
       ...rest,
       description_la: description_la || '',
-      image_url: imageUrl,
     };
 
-    const data = await blogService.update(String(params.id), dataToUpdate);
+    if (image && image.rawFile) {
+      payload.image_url = await uploadImageToCloudinary(image.rawFile);
+    } else if (image !== undefined) {
+      payload.image_url = image;
+    }
+
+    delete payload.image;
+
+    const data = await blogService.update(String(params.id), payload);
     return { data: data as any };
   },
 

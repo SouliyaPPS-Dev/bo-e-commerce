@@ -6,6 +6,8 @@ import {
 } from '../utils/cloudinaryKey';
 import { useImageStore } from '../store/imageStore';
 
+const PLACEHOLDER_IMAGE_URL = 'https://png.pngtree.com/png-vector/20210604/ourmid/pngtree-gray-network-placeholder-png-image_3416659.jpg';
+
 export interface ProductCategory {
   id: string;
   collectionId: string;
@@ -103,31 +105,29 @@ export const productCategoriesDataProvider: Partial<DataProvider> = {
     const { id, data } = params;
     const { image, ...rest } = data;
 
+    const payload: { [key: string]: any } = { ...rest };
+
+    // Case 1: New file uploaded.
     if (image && image.rawFile) {
       const formData = new FormData();
       formData.append('file', image.rawFile);
       formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET!);
-
-      const response = await fetch(CLOUDINARY_URL, {
-        method: 'POST',
-        body: formData,
-      });
-
+      const response = await fetch(CLOUDINARY_URL, { method: 'POST', body: formData });
       const cloudinaryData = await response.json();
-
-      const record = await pb.collection(COLLECTION_NAME).update(id, {
-        ...rest,
-        image_url: cloudinaryData.secure_url,
-      });
-
-      // Clear image store after successful upload
+      payload.image_url = cloudinaryData.secure_url; // Overwrite image_url in payload
       useImageStore.getState().clearImageState();
-
-      return { data: record as any };
-    } else {
-      const record = await pb.collection(COLLECTION_NAME).update(id, rest);
-      return { data: record as any };
     }
+    // Case 2: Image field was changed to a string (i.e. placeholder URL) or cleared.
+    else if (image !== undefined) {
+      payload.image_url = image; // Overwrite image_url with placeholder or null
+    }
+    // Case 3: `image` field was not in the changed data, so `image` is `undefined`.
+    // In this case, `payload.image_url` retains its original value from `rest`.
+
+    delete payload.image; // Ensure the transient `image` field is not sent to the DB.
+
+    const record = await pb.collection(COLLECTION_NAME).update(id, payload);
+    return { data: record as any };
   },
 
   delete: async (resource, params) => {

@@ -4,6 +4,8 @@ import pb, {
   updatePocketbaseDocument,
 } from '../api/pocketbase';
 
+const PLACEHOLDER_IMAGE_URL = 'https://png.pngtree.com/png-vector/20210604/ourmid/pngtree-gray-network-placeholder-png-image_3416659.jpg';
+
 export interface ProductData {
   collectionId: string;
   collectionName: string;

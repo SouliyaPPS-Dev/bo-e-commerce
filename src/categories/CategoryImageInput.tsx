@@ -9,6 +9,8 @@ import {
 } from 'react-admin';
 import { useImageStore } from '../store/imageStore';
 
+const PLACEHOLDER_IMAGE_URL = 'https://png.pngtree.com/png-vector/20210604/ourmid/pngtree-gray-network-placeholder-png-image_3416659.jpg';
+
 interface CategoryImageInputProps {
   source?: string;
   label?: string;
@@ -33,7 +35,12 @@ const CategoryImageInput = ({
     }
   };
 
-  const handleDeleteImage = () => {
+  const handleDeleteCurrentImage = () => {
+    setSelectImage(null);
+    field.onChange(PLACEHOLDER_IMAGE_URL);
+  };
+
+  const handleDeleteNewImage = () => {
     setSelectImage(null);
     field.onChange(null);
   };
@@ -41,6 +48,9 @@ const CategoryImageInput = ({
   // Show current image only if no new image is selected and it's not a create form
   const showCurrentImage =
     selectImage === null && record?.image_url && !field.value;
+
+  // Show placeholder image when user has clicked delete
+  const showPlaceholderImage = field.value === PLACEHOLDER_IMAGE_URL;
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -51,6 +61,54 @@ const CategoryImageInput = ({
       >
         <ImageField source='src' title='title' />
       </ImageInput>
+
+      {/* Placeholder Image Preview - Only shown after user deletes current image */}
+      {showPlaceholderImage && (
+        <Box
+          sx={{
+            mt: 2,
+            p: 2,
+            border: '2px solid #ff9800',
+            borderRadius: 1,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2,
+            backgroundColor: '#fff3e0',
+          }}
+        >
+          <img
+            src={PLACEHOLDER_IMAGE_URL}
+            alt='Placeholder image'
+            style={{
+              width: 80,
+              height: 80,
+              objectFit: 'cover',
+              borderRadius: 4,
+            }}
+          />
+          <Box sx={{ flex: 1 }}>
+            <p style={{ margin: 0, fontSize: '0.875rem', color: '#e65100', fontWeight: 600 }}>
+              Placeholder Image (Deleted)
+            </p>
+            <p style={{ margin: '4px 0 0 0', fontSize: '0.75rem', color: '#bf360c' }}>
+              {translate('resources.categories.fields.new_image_hint') || 'This will be sent to API on save'}
+            </p>
+          </Box>
+          <IconButton
+            size='small'
+            color='error'
+            onClick={handleDeleteNewImage}
+            title={translate('ra.action.delete') || 'Remove placeholder'}
+            sx={{
+              '&:hover': {
+                backgroundColor: '#ffebee',
+              },
+            }}
+          >
+            <DeleteIcon fontSize='small' />
+          </IconButton>
+        </Box>
+      )}
 
       {/* Current Image Preview - Only shown on edit when no new image is selected */}
       {showCurrentImage && (
@@ -84,10 +142,9 @@ const CategoryImageInput = ({
           <IconButton
             size='small'
             color='error'
-            onClick={handleDeleteImage}
+            onClick={handleDeleteCurrentImage}
             title={translate('ra.action.delete') || 'Delete image'}
             sx={{
-              display: showCurrentImage ? 'none' : 'block',
               '&:hover': {
                 backgroundColor: '#ffebee',
               },
@@ -151,10 +208,7 @@ const CategoryImageInput = ({
           <IconButton
             size='small'
             color='error'
-            onClick={() => {
-              setSelectImage(null);
-              field.onChange(null);
-            }}
+            onClick={handleDeleteNewImage}
             title={translate('ra.action.delete') || 'Remove new image'}
             sx={{
               '&:hover': {
