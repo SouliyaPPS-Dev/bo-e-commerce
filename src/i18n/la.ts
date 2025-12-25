@@ -476,6 +476,8 @@ const customLaoMessages: TranslationMessages = {
         created: 'ໂປສເຕີຖືກສ້າງ |||| %{smart_count} ໂປສເຕີຖືກສ້າງ',
         updated: 'ໂປສເຕີຖືກອັບເດດ |||| %{smart_count} ໂປສເຕີຖືກອັບເດດ',
         deleted: 'ໂປສເຕີຖືກລຶບ |||| %{smart_count} ໂປສເຕີຖືກລຶບ',
+        create_success: 'ສ້າງສິນຄ້າສໍາເລັດ',
+        update_success: 'ອັບເດດສິນຄ້າສໍາເລັດ',
       },
       errors: {
         total_count_less_than_sell_count:

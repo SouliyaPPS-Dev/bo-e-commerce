@@ -69,7 +69,24 @@ const normalizeImageUrls = (input: ProductData['image_url']): string[] => {
 
   if (Array.isArray(input)) {
     return input
-      .map((url) => (url ? String(url).trim() : ''))
+      .map((value) => {
+        if (!value) {
+          return '';
+        }
+        if (typeof value === 'string') {
+          return value.trim();
+        }
+        if (typeof value === 'object') {
+          const candidate =
+            (('url' in value ? (value as { url?: unknown }).url : undefined) ??
+              ('src' in value ? (value as { src?: unknown }).src : undefined) ??
+              ('value' in value ? (value as { value?: unknown }).value : undefined));
+          if (typeof candidate === 'string') {
+            return candidate.trim();
+          }
+        }
+        return '';
+      })
       .filter((url) => url.length > 0);
   }
 

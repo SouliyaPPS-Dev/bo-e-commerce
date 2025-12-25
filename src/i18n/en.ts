@@ -474,11 +474,12 @@ const customEnglishMessages: TranslationMessages = {
         created: 'Poster created |||| %{smart_count} posters created',
         updated: 'Poster updated |||| %{smart_count} posters updated',
         deleted: 'Poster deleted |||| %{smart_count} posters deleted',
+        create_success: 'Product created successfully',
+        update_success: 'Product updated successfully',
       },
       errors: {
         total_count_less_than_sell_count: 'Total count cannot be less than sell count',
       },
-
     },
     categories: {
       name: 'Category |||| Categories',

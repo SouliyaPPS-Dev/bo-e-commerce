@@ -1,31 +1,54 @@
 import * as React from 'react';
-import {
-  ImageInput,
-  ImageField,
-  TextInput,
-  useInput,
-  useRecordContext,
-  useTranslate,
-} from 'react-admin';
-import { Box, IconButton } from '@mui/material';
+import { ImageInput, ImageField, useInput, useTranslate } from 'react-admin';
+import { Box, IconButton, TextField } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { uploadImageToCloudinary } from '../utils/cloudinaryUpload';
 
-const PLACEHOLDER_IMAGE_URL = 'https://png.pngtree.com/png-vector/20210604/ourmid/pngtree-gray-network-placeholder-png-image_3416659.jpg';
+const PLACEHOLDER_IMAGE_URL =
+  'https://png.pngtree.com/png-vector/20210604/ourmid/pngtree-gray-network-placeholder-png-image_3416659.jpg';
 
 interface ImageUploadFieldProps {
   source: string;
   label?: string;
+  onRemove?: () => void;
 }
 
 const ImageUploadField = (props: ImageUploadFieldProps) => {
   const translate = useTranslate();
-  const { source, label } = props;
+  const { source, label, onRemove } = props;
   const previewAlt = label ? `${label} preview` : 'Image preview';
-  const record = useRecordContext(props);
   const { field } = useInput({
     source,
   });
+
+  const currentValue = React.useMemo(() => {
+    if (typeof field.value === 'string') {
+      return field.value;
+    }
+    if (field.value && typeof field.value === 'object') {
+      const possibleUrl = (field.value as { url?: unknown }).url;
+      return typeof possibleUrl === 'string' ? possibleUrl : '';
+    }
+    return '';
+  }, [field.value]);
+
+  const extractFile = (input: any): File | null => {
+    if (!input) return null;
+    if (input instanceof File) {
+      return input;
+    }
+    if (Array.isArray(input)) {
+      return extractFile(input[0]);
+    }
+    if (input.rawFile instanceof File) {
+      return input.rawFile;
+    }
+    const possibleFile = input?.target?.files?.[0];
+    if (possibleFile instanceof File) {
+      return possibleFile;
+    }
+    return null;
+  };
 
   const handleImageUpload = async (file: File) => {
     try {
@@ -37,10 +60,10 @@ const ImageUploadField = (props: ImageUploadFieldProps) => {
   };
 
   const handleDeleteImage = () => {
-    field.onChange(PLACEHOLDER_IMAGE_URL);
+    field.onChange('');
   };
 
-  const isPlaceholder = field.value === PLACEHOLDER_IMAGE_URL;
+  const isPlaceholder = currentValue === PLACEHOLDER_IMAGE_URL;
 
   return (
     <Box
@@ -61,21 +84,23 @@ const ImageUploadField = (props: ImageUploadFieldProps) => {
         }}
       >
         <Box sx={{ flex: 2 }}>
-          <TextInput
-            source={source}
-            label={label || 'Image URL'}
+          <TextField
             fullWidth
-            value={field.value || ''}
-            onChange={field.onChange}
+            label={label || 'Image URL'}
+            value={currentValue}
+            onChange={(event) => field.onChange(event.target.value ?? '')}
+            variant='outlined'
+            size='small'
           />
         </Box>
         <Box sx={{ flex: 1, minWidth: 180 }}>
           <ImageInput
             source={`_image_upload_${source}`}
             label='Upload Image'
-            onChange={(file) => {
+            onChange={(event) => {
+              const file = extractFile(event);
               if (file) {
-                handleImageUpload(file);
+                void handleImageUpload(file);
               }
             }}
             placeholder={translate('image_input_placeholder')}
@@ -104,9 +129,9 @@ const ImageUploadField = (props: ImageUploadFieldProps) => {
               position: 'relative',
             }}
           >
-            {field.value && typeof field.value === 'string' && (
+            {currentValue && (
               <img
-                src={field.value}
+                src={currentValue}
                 alt={previewAlt}
                 loading='lazy'
                 decoding='async'
@@ -120,7 +145,7 @@ const ImageUploadField = (props: ImageUploadFieldProps) => {
               />
             )}
           </Box>
-          {field.value && field.value !== PLACEHOLDER_IMAGE_URL && (
+          {(onRemove || currentValue) && (
             <IconButton
               size='small'
               color='error'
@@ -137,7 +162,13 @@ const ImageUploadField = (props: ImageUploadFieldProps) => {
             </IconButton>
           )}
           {isPlaceholder && (
-            <Box sx={{ fontSize: '0.75rem', color: '#e65100', textAlign: 'center' }}>
+            <Box
+              sx={{
+                fontSize: '0.75rem',
+                color: '#e65100',
+                textAlign: 'center',
+              }}
+            >
               Placeholder Set
             </Box>
           )}

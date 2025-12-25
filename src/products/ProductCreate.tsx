@@ -14,11 +14,13 @@ import {
   SimpleFormIterator,
   useTranslate,
 } from 'react-admin';
-import ImageUploadField from '../components/ImageUploadField';
+import ImageUrlIteratorItem from '../components/ImageUrlIteratorItem';
 import { Divider } from '@mui/material';
 import { uploadImageToCloudinary } from '../utils/cloudinaryUpload';
+import { useNotify } from 'react-admin';
 import ProductColorSelectInput from '../components/ProductColorSelectInput';
 import { useImageStore } from '../store/imageStore';
+import { formatImageUrls, parseImageUrls } from '../utils/imageUrlTransforms';
 
 const RichTextInput = React.lazy(() =>
   import('ra-input-rich-text').then((module) => ({
@@ -41,6 +43,7 @@ const ProductTitle = () => {
 const ProductCreate = () => {
   const translate = useTranslate();
   const { setSelectImage } = useImageStore();
+  const notify = useNotify();
 
   useEffect(() => {
     // Clear image store when component mounts
@@ -55,6 +58,9 @@ const ProductCreate = () => {
         onSuccess: () => {
           // Clear the image store after successful creation
           setSelectImage(null);
+          notify(translate('resources.products.notifications.create_success'), {
+            type: 'success',
+          });
         },
       }}
     >
@@ -136,9 +142,14 @@ const ProductCreate = () => {
 
         <Divider sx={{ my: 0.2 }} />
 
-        <ArrayInput source='image_url' label={translate('image_urls')}>
+        <ArrayInput
+          source='image_url'
+          label={translate('image_urls')}
+          format={formatImageUrls}
+          parse={parseImageUrls}
+        >
           <SimpleFormIterator inline disableRemove>
-            <ImageUploadField source='' label={translate('image_url')} />
+            <ImageUrlIteratorItem source='url' label={translate('image_url')} />
           </SimpleFormIterator>
         </ArrayInput>
 
