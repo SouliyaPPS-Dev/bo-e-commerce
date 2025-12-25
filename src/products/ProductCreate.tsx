@@ -13,6 +13,7 @@ import {
   ArrayInput,
   SimpleFormIterator,
   useTranslate,
+  useRedirect,
 } from 'react-admin';
 import ImageUrlIteratorItem from '../components/ImageUrlIteratorItem';
 import { Divider } from '@mui/material';
@@ -43,6 +44,7 @@ const ProductTitle = () => {
 const ProductCreate = () => {
   const translate = useTranslate();
   const { setSelectImage } = useImageStore();
+  const redirect = useRedirect();
   const notify = useNotify();
 
   useEffect(() => {
@@ -61,6 +63,7 @@ const ProductCreate = () => {
           notify(translate('resources.products.notifications.create_success'), {
             type: 'success',
           });
+          redirect('/products');
         },
       }}
     >
