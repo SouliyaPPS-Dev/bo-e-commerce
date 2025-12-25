@@ -137,7 +137,7 @@ const ProductCreate = () => {
         <Divider sx={{ my: 0.2 }} />
 
         <ArrayInput source='image_url' label={translate('image_urls')}>
-          <SimpleFormIterator inline>
+          <SimpleFormIterator inline disableRemove>
             <ImageUploadField source='' label={translate('image_url')} />
           </SimpleFormIterator>
         </ArrayInput>

@@ -63,7 +63,10 @@ const ProductEdit = () => {
         },
       }}
     >
-      <SimpleForm sx={{ maxWidth: '40em' }} toolbar={<ProductEditFormToolbar />}>
+      <SimpleForm
+        sx={{ maxWidth: '40em' }}
+        toolbar={<ProductEditFormToolbar />}
+      >
         <TextInput
           source='name'
           validate={required()}
@@ -71,11 +74,7 @@ const ProductEdit = () => {
           label={translate('name')}
         />
 
-        <TextInput
-          source='name_la'
-          label={translate('name_la')}
-          fullWidth
-        />
+        <TextInput source='name_la' label={translate('name_la')} fullWidth />
 
         <Divider sx={{ my: 0.2 }} />
 
@@ -160,12 +159,9 @@ const ProductEdit = () => {
 
         <Divider sx={{ my: 0.2 }} />
 
-        <ArrayInput
-          source='image_url'
-          label={translate('image_urls')}
-        >
-          <SimpleFormIterator inline>
-            <ImageUploadField source='' label={translate('image_url')}/>
+        <ArrayInput source='image_url' label={translate('image_urls')}>
+          <SimpleFormIterator inline disableRemove>
+            <ImageUploadField source='' label={translate('image_url')} />
           </SimpleFormIterator>
         </ArrayInput>
 
