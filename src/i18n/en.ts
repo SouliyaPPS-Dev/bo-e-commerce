@@ -477,6 +477,9 @@ const customEnglishMessages: TranslationMessages = {
         create_success: 'Product created successfully',
         update_success: 'Product updated successfully',
       },
+      actions: {
+        add_image_url: 'Add image URL',
+      },
       errors: {
         total_count_less_than_sell_count: 'Total count cannot be less than sell count',
       },

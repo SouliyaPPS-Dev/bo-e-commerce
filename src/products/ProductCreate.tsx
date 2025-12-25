@@ -16,6 +16,7 @@ import {
   useRedirect,
 } from 'react-admin';
 import ImageUrlIteratorItem from '../components/ImageUrlIteratorItem';
+import ImageUrlAddButton from '../components/ImageUrlAddButton';
 import { Divider } from '@mui/material';
 import { uploadImageToCloudinary } from '../utils/cloudinaryUpload';
 import { useNotify } from 'react-admin';
@@ -151,8 +152,12 @@ const ProductCreate = () => {
           format={formatImageUrls}
           parse={parseImageUrls}
         >
-          <SimpleFormIterator inline disableRemove>
-            <ImageUrlIteratorItem source='url' label={translate('image_url')} />
+          <SimpleFormIterator
+            inline
+            disableRemove
+            addButton={<ImageUrlAddButton />}
+          >
+            <ImageUrlIteratorItem source='' label={translate('image_url')} />
           </SimpleFormIterator>
         </ArrayInput>
 

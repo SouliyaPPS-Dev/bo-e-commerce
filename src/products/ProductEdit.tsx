@@ -21,6 +21,7 @@ import {
 } from 'react-admin';
 import Divider from '@mui/material/Divider';
 import ImageUrlIteratorItem from '../components/ImageUrlIteratorItem';
+import ImageUrlAddButton from '../components/ImageUrlAddButton';
 import { uploadImageToCloudinary } from '../utils/cloudinaryUpload';
 import ProductColorSelectInput from '../components/ProductColorSelectInput';
 import { useImageStore } from '../store/imageStore';
@@ -171,7 +172,11 @@ const ProductEdit = () => {
           format={formatImageUrls}
           parse={parseImageUrls}
         >
-          <SimpleFormIterator inline disableRemove>
+          <SimpleFormIterator
+            inline
+            disableRemove
+            addButton={<ImageUrlAddButton />}
+          >
             <ImageUrlIteratorItem source='' label={translate('image_url')} />
           </SimpleFormIterator>
         </ArrayInput>

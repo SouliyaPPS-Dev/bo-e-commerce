@@ -479,6 +479,9 @@ const customLaoMessages: TranslationMessages = {
         create_success: 'ສ້າງສິນຄ້າສໍາເລັດ',
         update_success: 'ອັບເດດສິນຄ້າສໍາເລັດ',
       },
+      actions: {
+        add_image_url: 'ເພີ່ມລິ້ງຮູບພາບ',
+      },
       errors: {
         total_count_less_than_sell_count:
           'ຈຳນວນທັງໝົດບໍ່ສາມາດໜ້ອຍກວ່າຈຳນວນທີ່ຂາຍໄດ້',
