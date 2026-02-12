@@ -328,7 +328,10 @@ export const productsDataProvider: any = {
     const { page, perPage } = pagination;
     const { field, order } = sort;
 
-    const filterConditions: string[] = [`${target} = "${id}"`];
+    const filterConditions: string[] = [
+      `${target} = "${id}"`,
+      "is_delete = false",
+    ];
 
     if (filter.q) {
       filterConditions.push(

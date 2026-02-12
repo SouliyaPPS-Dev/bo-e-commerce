@@ -73,7 +73,7 @@ const CategoryEdit = () => {
     <Edit
       title={<CategoryTitle />}
       actions={<CategoryEditActions />}
-      mutationMode='pessimistic'
+      mutationMode="pessimistic"
       mutationOptions={{
         onSuccess: () => {
           // Clear the image store after successful update
@@ -83,43 +83,44 @@ const CategoryEdit = () => {
     >
       <SimpleForm toolbar={<CategoryEditFormToolbar />}>
         <Box
-          display='flex'
-          flexDirection='column'
+          display="flex"
+          flexDirection="column"
           gap={2}
-          width='100%'
+          width="100%"
           maxWidth={600}
         >
-          <Typography variant='h6' gutterBottom>
-            {translate('resources.categories.form_title_edit')}
+          <Typography variant="h6" gutterBottom>
+            {translate("resources.categories.form_title_edit")}
           </Typography>
 
           <TextInput
-            source='name'
-            label={translate('resources.categories.fields.name')}
+            source="name"
+            label={translate("resources.categories.fields.name")}
           />
           <TextInput
-            source='name_la'
-            label={translate('resources.categories.fields.name_la')}
+            source="name_la"
+            label={translate("resources.categories.fields.name_la")}
           />
           <CategoryImageInput
-            source='image'
-            label={translate('resources.categories.fields.image')}
+            source="image"
+            label={translate("resources.categories.fields.image")}
             onImageSelect={() => {
               // This will be called when image is selected
             }}
           />
 
           <Labeled
-            label={translate('resources.categories.fields.products')}
+            label={translate("resources.categories.fields.products")}
             fullWidth
           >
             <ReferenceManyField
-              reference='products'
-              target='category_id'
+              reference="products"
+              target="category_id"
               perPage={20}
+              filter={{ is_delete: false }}
             >
               <DataTable
-                sx={{ maxWidth: 800, marginLeft: 0, marginRight: 'auto' }}
+                sx={{ maxWidth: 800, marginLeft: 0, marginRight: "auto" }}
               >
                 <Column
                   sx={{ width: 25, padding: 0 }}
@@ -127,25 +128,25 @@ const CategoryEdit = () => {
                   label={false}
                 />
                 <Column
-                  source='image_url'
+                  source="image_url"
                   render={ImageUrlField}
-                  label={translate('resources.products.fields.image_url')}
+                  label={translate("resources.products.fields.image_url")}
                 />
                 <ColumnNumber
-                  source='name'
-                  label={translate('resources.products.fields.name')}
+                  source="name"
+                  label={translate("resources.products.fields.name")}
                   options={{ minimumFractionDigits: 2 }}
                 />
                 <Column
-                  label={translate('resources.categories.fields.price')}
+                  label={translate("resources.categories.fields.price")}
                   render={(record: Product) =>
                     `${formatCurrency(
-                      convert(record.price || 0)
+                      convert(record.price || 0),
                     )} ${displayCurrency}`
                   }
                 />
 
-                <Column align='right'>
+                <Column align="right">
                   <EditButton />
                 </Column>
               </DataTable>
