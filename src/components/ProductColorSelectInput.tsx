@@ -1,9 +1,6 @@
 import { useMemo } from 'react';
 import { SelectInput, SelectInputProps, useRecordContext } from 'react-admin';
-import {
-  useProductColors,
-  DEFAULT_PRODUCT_COLORS,
-} from '../hooks/useProductColors';
+import { useProductColors } from "../hooks/useProductColors";
 
 interface ProductColorChoice {
   id: string;
@@ -18,8 +15,9 @@ const ProductColorSelectInput = ({
   disabled,
   ...rest
 }: ProductColorSelectInputProps) => {
-  const { data: colors, isLoading } = useProductColors();
   const record = useRecordContext<any>();
+  const productId = record?.id ? String(record.id) : undefined;
+  const { data: colors, isLoading } = useProductColors(productId);
 
   const currentValue = useMemo(() => {
     if (!record || !rest?.source) {
@@ -29,19 +27,13 @@ const ProductColorSelectInput = ({
     if (Array.isArray(value)) {
       return value.length > 0 ? String(value[0]) : undefined;
     }
-    if (value === null || value === undefined || value === '') {
+    if (value === null || value === undefined || value === "") {
       return undefined;
     }
     return String(value);
   }, [record, rest?.source]);
 
   const choices: ProductColorChoice[] = useMemo(() => {
-    const fallbackChoices = DEFAULT_PRODUCT_COLORS.map((value) => ({
-      id: value,
-      name: value,
-      value,
-    }));
-
     const remoteChoices =
       colors && colors.length > 0
         ? colors.map((color) => ({
@@ -51,9 +43,12 @@ const ProductColorSelectInput = ({
           }))
         : [];
 
-    const combined = [...remoteChoices, ...fallbackChoices];
+    const combined = [...remoteChoices];
 
-    if (currentValue) {
+    if (
+      currentValue &&
+      !remoteChoices.find((choice) => choice.value === currentValue)
+    ) {
       combined.unshift({
         id: currentValue,
         name: currentValue,
@@ -79,11 +74,11 @@ const ProductColorSelectInput = ({
     <SelectInput
       {...rest}
       choices={choices}
-      optionText='name'
-      optionValue='value'
+      optionText="name"
+      optionValue="value"
       disabled={disabled || (isLoading && choices.length === 0)}
-      emptyValue=''
-      emptyText=''
+      emptyValue=""
+      emptyText=""
     />
   );
 };
