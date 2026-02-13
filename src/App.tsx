@@ -26,6 +26,7 @@ import { Layout } from './layout';
 import LoginPage from './layout/Login';
 import orders from './orders';
 import products from './products';
+import productVariants from "./productVariants";
 import reviews from './reviews';
 import Segments from './segments/Segments';
 import MuiProvider from './styles/ThemeProvider';
@@ -71,9 +72,9 @@ const App = () => {
   const darkTheme = themes.find((theme) => theme.name === themeName)?.dark;
   return (
     <Admin
-      title='Admin'
+      title="Admin"
       dataProvider={dataProviderFactory(
-        process.env.REACT_APP_DATA_PROVIDER || ''
+        process.env.REACT_APP_DATA_PROVIDER || "",
       )}
       store={store}
       authProvider={authProvider}
@@ -85,21 +86,22 @@ const App = () => {
       theme={singleTheme}
       lightTheme={lightTheme}
       darkTheme={darkTheme}
-      defaultTheme='light'
+      defaultTheme="light"
       requireAuth
     >
       <CustomRoutes>
-        <Route path='/segments' element={<Segments />} />
+        <Route path="/segments" element={<Segments />} />
       </CustomRoutes>
-      <Resource name='customers' {...customers} />
-      <Resource name='orders' {...orders} />
-      <Resource name='invoices' {...invoices} />
-      <Resource name='products' {...products} />
-      <Resource name='categories' {...categories} />
-      <Resource name='reviews' {...reviews} />
-      <Resource name='blogs' {...blogs} />
-      <Resource name='users' {...users} />
-      <Resource name='currency' {...currencies} />
+      <Resource name="customers" {...customers} />
+      <Resource name="orders" {...orders} />
+      <Resource name="invoices" {...invoices} />
+      <Resource name="products" {...products} />
+      <Resource name="product_variants" {...productVariants} />
+      <Resource name="categories" {...categories} />
+      <Resource name="reviews" {...reviews} />
+      <Resource name="blogs" {...blogs} />
+      <Resource name="users" {...users} />
+      <Resource name="currency" {...currencies} />
     </Admin>
   );
 };

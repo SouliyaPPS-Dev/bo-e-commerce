@@ -3,6 +3,7 @@ import ordersApiDataProvider from './ordersApi';
 import { blogsDataProvider } from './blogsDataProvider';
 import { customersDataProvider } from './customersDataProvider';
 import { productsDataProvider } from './productsDataProvider';
+import { productVariantsDataProvider } from "./productVariantsDataProvider";
 import { productCategoriesDataProvider } from './productCategoriesDataProvider';
 import { usersDataProvider } from './usersDataProvider';
 import { addressesDataProvider } from './addressesDataProvider';
@@ -29,53 +30,108 @@ export default (type: string) => {
       return async (resource: string, params: any) => {
         try {
           // Use custom orders API for orders resource
-          if (resource === 'orders' && ordersApiDataProvider[name.toString()]) {
-            return await ordersApiDataProvider[name.toString()](resource, params);
+          if (resource === "orders" && ordersApiDataProvider[name.toString()]) {
+            return await ordersApiDataProvider[name.toString()](
+              resource,
+              params,
+            );
           }
 
           // Use custom blogs data provider for blogs resource
-          if (resource === 'blogs' && blogsDataProvider[name.toString()]) {
+          if (resource === "blogs" && blogsDataProvider[name.toString()]) {
             return await blogsDataProvider[name.toString()](resource, params);
           }
 
           // Use custom customers data provider for customers resource
-          if (resource === 'customers' && customersDataProvider[name.toString()]) {
-            return await customersDataProvider[name.toString()](resource, params);
+          if (
+            resource === "customers" &&
+            customersDataProvider[name.toString()]
+          ) {
+            return await customersDataProvider[name.toString()](
+              resource,
+              params,
+            );
           }
 
           // Use custom products data provider for products resource
-          if (resource === 'products' && productsDataProvider[name.toString()]) {
-            return await productsDataProvider[name.toString()](resource, params);
+          if (
+            resource === "products" &&
+            productsDataProvider[name.toString()]
+          ) {
+            return await productsDataProvider[name.toString()](
+              resource,
+              params,
+            );
+          }
+
+          // Use custom product variants data provider for product_variants resource
+          if (
+            resource === "product_variants" &&
+            productVariantsDataProvider[name.toString()]
+          ) {
+            return await productVariantsDataProvider[name.toString()](
+              resource,
+              params,
+            );
           }
 
           // Use custom product categories data provider for product_categories and categories resources
-          if ((resource === 'product_categories' || resource === 'categories') && productCategoriesDataProvider[name.toString()]) {
-            return await productCategoriesDataProvider[name.toString()](resource, params);
+          if (
+            (resource === "product_categories" || resource === "categories") &&
+            productCategoriesDataProvider[name.toString()]
+          ) {
+            return await productCategoriesDataProvider[name.toString()](
+              resource,
+              params,
+            );
           }
 
           // Use custom users data provider for users resource
-          if (resource === 'users' && usersDataProvider[name.toString()]) {
+          if (resource === "users" && usersDataProvider[name.toString()]) {
             return await usersDataProvider[name.toString()](resource, params);
           }
 
           // Use custom addresses data provider for addresses resource
-          if (resource === 'addresses' && addressesDataProvider[name.toString()]) {
-            return await addressesDataProvider[name.toString()](resource, params);
+          if (
+            resource === "addresses" &&
+            addressesDataProvider[name.toString()]
+          ) {
+            return await addressesDataProvider[name.toString()](
+              resource,
+              params,
+            );
           }
 
           // Use custom currencies data provider for currencies resource
-          if (resource === 'currency' || resource === 'currencies') {
-            console.log("=> currency resource detected", { method: name.toString(), resource, params });
-            console.log("=> currenciesDataProvider methods:", Object.keys(currenciesDataProvider));
-            
+          if (resource === "currency" || resource === "currencies") {
+            console.log("=> currency resource detected", {
+              method: name.toString(),
+              resource,
+              params,
+            });
+            console.log(
+              "=> currenciesDataProvider methods:",
+              Object.keys(currenciesDataProvider),
+            );
+
             const methodName = name.toString();
-            const providerMethod = currenciesDataProvider[methodName as keyof typeof currenciesDataProvider];
-            
-            if (providerMethod && typeof providerMethod === 'function') {
-              console.log("=> call api currency", { method: methodName, resource, params });
+            const providerMethod =
+              currenciesDataProvider[
+                methodName as keyof typeof currenciesDataProvider
+              ];
+
+            if (providerMethod && typeof providerMethod === "function") {
+              console.log("=> call api currency", {
+                method: methodName,
+                resource,
+                params,
+              });
               return await providerMethod(resource, params);
             } else {
-              console.log("=> method not found in currenciesDataProvider, falling back to default", { methodName });
+              console.log(
+                "=> method not found in currenciesDataProvider, falling back to default",
+                { methodName },
+              );
             }
           }
 
