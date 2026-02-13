@@ -60,12 +60,19 @@ const ProductColorSelectInput = ({
     if (!record) {
       return [];
     }
+
+    if (record.color) {
+      return normalizeValueArray(record.color);
+    }
+
     if (Array.isArray(record.color_variant_ids)) {
       return normalizeValueArray(record.color_variant_ids);
     }
+
     if (rest?.source && record[rest.source]) {
       return normalizeValueArray(record[rest.source]);
     }
+
     return [];
   }, [record, rest?.source]);
 
