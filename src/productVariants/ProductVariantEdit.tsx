@@ -15,7 +15,7 @@ import {
 import { Box, Divider } from "@mui/material";
 
 const ProductVariantEditToolbar = () => (
-  <Toolbar>
+  <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
     <SaveButton alwaysEnable />
     <DeleteWithConfirmButton />
   </Toolbar>

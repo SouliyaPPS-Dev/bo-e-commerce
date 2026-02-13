@@ -23,16 +23,6 @@ const ProductVariantCreate = () => {
   return (
     <Create>
       <SimpleForm defaultValues={defaultValues} sx={{ maxWidth: "40em" }}>
-        <ReferenceInput
-          source="product_id"
-          reference="products"
-          label={translate("resources.product_variants.fields.product_id")}
-          validate={required()}
-          fullWidth
-        >
-          <AutocompleteInput optionText="name" fullWidth />
-        </ReferenceInput>
-
         <TextInput
           source="color"
           fullWidth
