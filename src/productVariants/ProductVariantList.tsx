@@ -20,14 +20,6 @@ const productVariantFilters = [
     alwaysOn
     resettable
   />,
-  <ReferenceInput
-    key="product_id"
-    source="product_id"
-    reference="products"
-    label="resources.product_variants.fields.product_id"
-  >
-    <AutocompleteInput optionText="name" />
-  </ReferenceInput>,
   <BooleanInput
     key="is_active"
     source="is_active"
@@ -45,14 +37,6 @@ const ProductVariantList = () => {
       sort={{ field: "updated", order: "DESC" }}
     >
       <Datagrid rowClick="edit">
-        <ReferenceField
-          source="product_id"
-          reference="products"
-          label={translate("resources.product_variants.fields.product_id")}
-          link="show"
-        >
-          <TextField source="name" />
-        </ReferenceField>
         <TextField
           source="color"
           label={translate("resources.product_variants.fields.color")}

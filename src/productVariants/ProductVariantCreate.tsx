@@ -27,12 +27,10 @@ const ProductVariantCreate = () => {
           source="product_id"
           reference="products"
           label={translate("resources.product_variants.fields.product_id")}
+          validate={required()}
+          fullWidth
         >
-          <AutocompleteInput
-            optionText="name"
-            fullWidth
-            validate={required()}
-          />
+          <AutocompleteInput optionText="name" fullWidth />
         </ReferenceInput>
 
         <TextInput

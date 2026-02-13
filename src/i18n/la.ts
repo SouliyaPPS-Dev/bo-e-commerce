@@ -253,7 +253,6 @@ const customLaoMessages: TranslationMessages = {
     product_variants: {
       name: "ລັກສະນະສິນຄ້າ |||| ລັກສະນະສິນຄ້າ",
       fields: {
-        product_id: "ສິນຄ້າ",
         color: "ສີ",
         size: "ຂະໜາດ",
         weight: "ນ້ໍາໜັກ",

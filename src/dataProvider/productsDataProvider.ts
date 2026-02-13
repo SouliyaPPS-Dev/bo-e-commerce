@@ -30,6 +30,7 @@ export interface ProductData {
   ethical_craft_la?: string;
   sort_by?: string;
   colors?: string | string[];
+  color_variant_ids?: string[];
   is_delete: boolean;
   created: string;
   updated: string;
@@ -119,6 +120,49 @@ const normalizeImageUrls = (input: ProductData['image_url']): string[] => {
   return [];
 };
 
+const normalizeColorVariantIds = (input: unknown): string[] => {
+  if (!input) {
+    return [];
+  }
+
+  if (Array.isArray(input)) {
+    return input
+      .map((value) =>
+        typeof value === "string" ? value.trim() : String(value ?? ""),
+      )
+      .filter((value) => value.length > 0);
+  }
+
+  if (typeof input === "string") {
+    const trimmed = input.trim();
+    if (!trimmed) {
+      return [];
+    }
+
+    if (
+      (trimmed.startsWith("[") && trimmed.endsWith("]")) ||
+      (trimmed.startsWith("{") && trimmed.endsWith("}"))
+    ) {
+      try {
+        const parsed = JSON.parse(trimmed);
+        if (Array.isArray(parsed)) {
+          return parsed
+            .map((value) =>
+              typeof value === "string" ? value.trim() : String(value ?? ""),
+            )
+            .filter((value) => value.length > 0);
+        }
+      } catch {
+        // fall through
+      }
+    }
+
+    return [trimmed];
+  }
+
+  return [String(input)];
+};
+
 const normalizeProductPayload = (
   data: Partial<ProductData>,
   isCreate = false
@@ -129,34 +173,37 @@ const normalizeProductPayload = (
     collectionName,
     created,
     updated,
+    color_variant_ids,
     ...rest
   } = data;
+
+  const colorVariantIds = normalizeColorVariantIds(
+    color_variant_ids ?? rest.colors,
+  );
 
   const normalized: Record<string, any> = {
     ...rest,
     image_url: normalizeImageUrls(rest.image_url ?? []),
-    description: rest.description ?? '',
-    description_la: rest.description_la ?? '',
-    details: rest.details ?? '',
-    details_la: rest.details_la ?? '',
-    design_story_en: rest.design_story_en ?? '',
-    design_story_la: rest.design_story_la ?? '',
-    exceptional_quality_en: rest.exceptional_quality_en ?? '',
-    exceptional_quality_la: rest.exceptional_quality_la ?? '',
-    ethical_craft_en: rest.ethical_craft_en ?? '',
-    ethical_craft_la: rest.ethical_craft_la ?? '',
+    description: rest.description ?? "",
+    description_la: rest.description_la ?? "",
+    details: rest.details ?? "",
+    details_la: rest.details_la ?? "",
+    design_story_en: rest.design_story_en ?? "",
+    design_story_la: rest.design_story_la ?? "",
+    exceptional_quality_en: rest.exceptional_quality_en ?? "",
+    exceptional_quality_la: rest.exceptional_quality_la ?? "",
+    ethical_craft_en: rest.ethical_craft_en ?? "",
+    ethical_craft_la: rest.ethical_craft_la ?? "",
     total_count: rest.total_count ?? 0,
     sell_count: rest.sell_count ?? 0,
     old_price:
       rest.old_price !== undefined
         ? rest.old_price
         : rest.price !== undefined
-        ? rest.price
-        : 0,
-    sort_by: rest.sort_by || 'Newest',
-    colors: Array.isArray(rest.colors)
-      ? rest.colors[0] ?? ''
-      : rest.colors ?? '',
+          ? rest.price
+          : 0,
+    sort_by: rest.sort_by || "Newest",
+    colors: colorVariantIds,
   };
 
   if (isCreate) {
@@ -166,13 +213,18 @@ const normalizeProductPayload = (
   return normalized;
 };
 
-const normalizeProductRecord = (record: any): ProductData => ({
-  ...record,
-  image_url: normalizeImageUrls(record.image_url),
-  colors: Array.isArray(record.colors)
-    ? record.colors[0] ?? ''
-    : record.colors ?? '',
-});
+const normalizeProductRecord = (record: any): ProductData => {
+  const colorVariantIds = normalizeColorVariantIds(
+    record.color_variant_ids ?? record.colors,
+  );
+
+  return {
+    ...record,
+    image_url: normalizeImageUrls(record.image_url),
+    colors: colorVariantIds[0] ?? "",
+    color_variant_ids: colorVariantIds,
+  };
+};
 
 export const productsDataProvider: any = {
   getList: async (

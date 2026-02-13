@@ -255,7 +255,6 @@ const customEnglishMessages: TranslationMessages = {
     product_variants: {
       name: "Product Variant |||| Product Variants",
       fields: {
-        product_id: "Product",
         color: "Color",
         size: "Size",
         weight: "Weight",

@@ -39,17 +39,6 @@ const ProductVariantEdit = () => {
         toolbar={<ProductVariantEditToolbar />}
         sx={{ maxWidth: "40em" }}
       >
-        <ReferenceInput
-          source="product_id"
-          reference="products"
-          label={translate("resources.product_variants.fields.product_id")}
-        >
-          <AutocompleteInput
-            optionText="name"
-            fullWidth
-            validate={required()}
-          />
-        </ReferenceInput>
         <TextInput
           source="color"
           fullWidth
