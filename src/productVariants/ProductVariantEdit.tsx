@@ -10,6 +10,7 @@ import {
   Toolbar,
   required,
   useNotify,
+  useRedirect,
   useTranslate,
 } from "react-admin";
 import { Box, Divider } from "@mui/material";
@@ -24,15 +25,18 @@ const ProductVariantEditToolbar = () => (
 const ProductVariantEdit = () => {
   const translate = useTranslate();
   const notify = useNotify();
+  const redirect = useRedirect();
 
   return (
     <Edit
       mutationMode="pessimistic"
       mutationOptions={{
-        onSuccess: () =>
+        onSuccess: () => {
           notify("resources.product_variants.notifications.updated", {
             type: "success",
-          }),
+          });
+          redirect("list", "product_variants");
+        },
       }}
     >
       <SimpleForm

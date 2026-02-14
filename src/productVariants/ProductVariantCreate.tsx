@@ -7,11 +7,15 @@ import {
   TextInput,
   required,
   useTranslate,
+  useNotify,
+  useRedirect,
 } from "react-admin";
 import { useMemo } from "react";
 
 const ProductVariantCreate = () => {
   const translate = useTranslate();
+  const notify = useNotify();
+  const redirect = useRedirect();
 
   const defaultValues = useMemo(
     () => ({
@@ -21,7 +25,17 @@ const ProductVariantCreate = () => {
   );
 
   return (
-    <Create>
+    <Create
+      mutationMode="pessimistic"
+      mutationOptions={{
+        onSuccess: () => {
+          notify("resources.product_variants.notifications.created", {
+            type: "success",
+          });
+          redirect("list", "product_variants");
+        },
+      }}
+    >
       <SimpleForm defaultValues={defaultValues} sx={{ maxWidth: "40em" }}>
         <TextInput
           source="color"

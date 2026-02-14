@@ -1,5 +1,5 @@
-import englishMessages from 'ra-language-english';
-import { TranslationMessages } from 'react-admin';
+import englishMessages from "ra-language-english";
+import { TranslationMessages } from "react-admin";
 
 const customLaoMessages: TranslationMessages = {
   ...englishMessages,
@@ -207,8 +207,8 @@ const customLaoMessages: TranslationMessages = {
   sort_popular: "ນິຍົມ",
   colors: "ສີ",
   product_information: "ຂໍ້ມູນສິນຄ້າ",
-  description: "ລາຍລະອຽດ",
-  description_la: "ລາຍລະອຽດ (ລາວ)",
+  description: "ຄໍາອະທິບາຍ",
+  description_la: "ຄໍາອະທິບາຍ (ລາວ)",
   english: "ພາສາອັງກິດ",
   lao: "ພາສາລາວ",
   product_details: "ລາຍລະອຽດສິນຄ້າ",
@@ -364,8 +364,8 @@ const customLaoMessages: TranslationMessages = {
       fields: {
         image: "ຮູບພາບ",
         title: "ຫົວຂໍ້",
-        description: "ລາຍລະອຽດ",
-        description_la: "ລາຍລະອຽດ (ລາວ)",
+        description: "ຄໍາອະທິບາຍ",
+        description_la: "ຄໍາອະທິບາຍ (ລາວ)",
         count: "ຈຳນວນ",
         created: "ສ້າງเมื่อ",
         updated: "อัปเดตเมื่อ",
@@ -453,12 +453,10 @@ const customLaoMessages: TranslationMessages = {
     products: {
       name: "ສິນຄ້າ |||| ສິນຄ້າ",
       fields: {
-        category_id: "ໝວດໝູ່",
         height_gte: "ຄວາມສູງຕໍ່າສຸດ",
         height_lte: "ຄວາມສູງສູງສຸດ",
         height: "ຄວາມສູງ",
         image: "ຮູບພາບ",
-        price: "ລາຄາ",
         reference: "ເລກອ້າງອີງ",
         sales: "ການຂາຍ",
         stock_lte: "ສະຕັອກຕໍ່າ",
@@ -471,9 +469,17 @@ const customLaoMessages: TranslationMessages = {
         image_url: "ຮູບພາບ",
         name_la: "ຊື່ (ລາວ)",
         total_count: "ຈຳນວນທັງໝົດ",
+        sell_count: "ຈຳນວນທີ່ຂາຍໄດ້",
+        price: "ລາຄາ",
+        old_price: "ລາຄາເກົ່າ",
+        category_id: "ໝວດໝູ່",
+        color: "ສີ",
+        sort_by: "ຈັດຮຽງຕາມ",
+        description: "ຄໍາອະທິບາຍ",
         image_urls: "ລິ້ງຮູບພາບ",
         details: "ລາຍລະອຽດ",
         details_la: "ລາຍລະອຽດ (ລາວ)",
+        description_la: "ຄໍາອະທິບາຍ (ລາວ)",
       },
       tabs: {
         image: "ຮູບພາບ",

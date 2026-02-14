@@ -246,7 +246,7 @@ const ProductCreate = () => {
         <React.Suspense fallback={<div>Loading...</div>}>
           <RichTextInput
             source="description_la"
-            label={translate("description_la")}
+            label={translate("resources.products.fields.description_la")}
             fullWidth
           />
         </React.Suspense>
