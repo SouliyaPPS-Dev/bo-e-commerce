@@ -260,20 +260,26 @@ const OrderPendingRow: React.FC<{
         <Box>
           <Typography variant='body2' fontWeight='medium'>
             {currency === 'USD' && order?.amountUSD
-              ? formatCurrencyByType(
-                  Number(order?.amountUSD) * order?.quantity,
-                  'USD'
-                )
+              ? Number(order.amountUSD) === 0
+                ? translate('for_auction')
+                : formatCurrencyByType(
+                    Number(order?.amountUSD) * order?.quantity,
+                    'USD'
+                  )
               : currency === 'THB' && order?.amountTHB
-              ? formatCurrencyByType(
-                  Number(order?.amountTHB) * order?.quantity,
-                  'THB'
-                )
+              ? Number(order.amountTHB) === 0
+                ? translate('for_auction')
+                : formatCurrencyByType(
+                    Number(order?.amountTHB) * order?.quantity,
+                    'THB'
+                  )
               : currency === 'LAK' && order?.amountLAK
-              ? formatCurrencyByType(
-                  Number(order?.amountLAK) * order?.quantity,
-                  'LAK'
-                )
+              ? Number(order.amountLAK) === 0
+                ? translate('for_auction')
+                : formatCurrencyByType(
+                    Number(order?.amountLAK) * order?.quantity,
+                    'LAK'
+                  )
               : ''}
           </Typography>
         </Box>
@@ -306,7 +312,7 @@ const OrderDetail: React.FC<{ details: any }> = ({ details }) => {
   const translate = useTranslate();
 
   const formatCurrencyValue = (amount: number, currencyType: string) =>
-    formatCurrencyByType(amount, currencyType);
+    amount === 0 ? translate('for_auction') : formatCurrencyByType(amount, currencyType);
 
   return (
     <Box>

@@ -57,7 +57,7 @@ export const PendingOrder = (props: Props) => {
               color: 'text.primary',
             }}
           >
-            {order.total}$
+            {order.total === 0 ? translate('for_auction') : `${order.total}$`}
           </Box>
         </ListItemSecondaryAction>
       </ListItemButton>

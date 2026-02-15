@@ -140,9 +140,11 @@ const CategoryEdit = () => {
                 <Column
                   label={translate("resources.categories.fields.price")}
                   render={(record: Product) =>
-                    `${formatCurrency(
-                      convert(record.price || 0),
-                    )} ${displayCurrency}`
+                    record.price === 0
+                      ? translate("for_auction")
+                      : `${formatCurrency(
+                          convert(record.price || 0),
+                        )} ${displayCurrency}`
                   }
                 />
 

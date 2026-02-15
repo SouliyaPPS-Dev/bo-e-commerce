@@ -171,6 +171,7 @@ const customLaoMessages: TranslationMessages = {
   order_items: "ລາຍການສັ່ງຊື້",
   qty: "ຈໍານວນ",
   price: "ລາຄາ",
+  for_auction: "ສຳລັບການປະມູນ",
   total: "ລວມ",
   image: "ຮູບພາບ",
   currency: "ສະກຸນເງິນ",

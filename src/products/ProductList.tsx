@@ -238,7 +238,9 @@ const ProductCard = () => {
             wordBreak: 'break-word',
           }}
         >
-          {formatCurrency(convert(record.price))} {displayCurrency}
+          {record.price === 0
+            ? translate('for_auction')
+            : `${formatCurrency(convert(record.price))} ${displayCurrency}`}
         </Typography>
 
         <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>

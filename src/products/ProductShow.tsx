@@ -26,7 +26,7 @@ import {
   useRecordContext,
   useTranslate,
 } from 'react-admin';
-import { useCurrencyContext } from '../components/CurrencySelector/CurrencyProvider';
+import { useCurrencyContext, formatCurrency } from '../components/CurrencySelector/CurrencyProvider';
 import { useLocaleState } from 'react-admin';
 
 const parseColorValues = (value: unknown): string[] => {
@@ -163,7 +163,7 @@ const ProductImage = () => {
 };
 
 const ProductShow = () => {
-  const { displayCurrency } = useCurrencyContext();
+  const { displayCurrency, convert } = useCurrencyContext();
   const translate = useTranslate();
   const [locale] = useLocaleState();
 
@@ -206,23 +206,17 @@ const ProductShow = () => {
                   >
                     {translate('price')}:
                   </Typography>
-                  <NumberField
-                    source='price'
+                  <FunctionField
+                    render={(record: any) =>
+                      record.price === 0
+                        ? translate('for_auction')
+                        : `${formatCurrency(convert(record.price))} ${displayCurrency}`
+                    }
                     sx={{
                       fontSize: '1rem',
                       fontWeight: 600,
                     }}
                   />
-                  <Typography
-                    variant='h6'
-                    sx={{
-                      fontSize: '1rem',
-                      fontWeight: 600,
-                      ml: 0.5,
-                    }}
-                  >
-                    {displayCurrency}
-                  </Typography>
                 </Box>
 
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>

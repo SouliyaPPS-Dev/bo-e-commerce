@@ -164,6 +164,7 @@ const customEnglishMessages: TranslationMessages = {
   order_items: "Order Items",
   qty: "Qty",
   price: "Price",
+  for_auction: "For Auction",
   total: "Total",
   product: "Product",
   image: "Image",

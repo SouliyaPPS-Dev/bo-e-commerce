@@ -412,7 +412,7 @@ const OrderDetail: React.FC<{
   const totals = calculateTotals();
 
   const formatAmount = (amount: number, currencyType: string) =>
-    formatCurrencyByType(amount, currencyType);
+    amount === 0 ? translate('for_auction') : formatCurrencyByType(amount, currencyType);
 
   const getCurrentTotal = () => {
     switch (currency) {

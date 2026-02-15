@@ -7,8 +7,9 @@ import {
     ImageListItem,
     ImageListItemBar,
 } from '@mui/material';
-import { useCreatePath, NumberField, useListContext } from 'react-admin';
+import { useCreatePath, NumberField, useListContext, FunctionField, useTranslate } from 'react-admin';
 import { Link } from 'react-router-dom';
+import { useCurrencyContext, formatCurrency } from '../components/CurrencySelector/CurrencyProvider';
 
 const GridList = () => {
     const { isPending } = useListContext();
@@ -55,6 +56,8 @@ const LoadedGridList = () => {
     const { data } = useListContext();
     const cols = useColsForWidth();
     const createPath = useCreatePath();
+    const translate = useTranslate();
+    const { displayCurrency, convert } = useCurrencyContext();
 
     if (!data) return null;
 
@@ -97,14 +100,12 @@ const LoadedGridList = () => {
                             subtitle={
                                 <span>
                                     {record.width}x{record.height},{' '}
-                                    <NumberField
-                                        source="price"
-                                        record={record}
-                                        color="inherit"
-                                        options={{
-                                            style: 'currency',
-                                            currency: 'USD',
-                                        }}
+                                    <FunctionField
+                                        render={(record: any) =>
+                                            record.price === 0
+                                                ? translate('for_auction')
+                                                : `${formatCurrency(convert(record.price))} ${displayCurrency}`
+                                        }
                                         sx={{
                                             display: 'inline',
                                             fontSize: '1em',
