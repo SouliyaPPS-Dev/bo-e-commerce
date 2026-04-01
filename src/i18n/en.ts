@@ -1,5 +1,5 @@
-import englishMessages from 'ra-language-english';
-import { TranslationMessages } from 'react-admin';
+import englishMessages from "ra-language-english";
+import { TranslationMessages } from "react-admin";
 
 const customEnglishMessages: TranslationMessages = {
   ...englishMessages,
@@ -374,6 +374,10 @@ const customEnglishMessages: TranslationMessages = {
         created: "Created",
         updated: "Updated",
         current_image: "Current Image",
+      },
+      notifications: {
+        create_success: "Blog created successfully",
+        update_success: "Blog updated successfully",
       },
     },
     upload_image: "Upload Image",

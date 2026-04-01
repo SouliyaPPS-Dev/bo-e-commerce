@@ -369,8 +369,12 @@ const customLaoMessages: TranslationMessages = {
         description_la: "ຄໍາອະທິບາຍ (ລາວ)",
         count: "ຈຳນວນ",
         created: "ສ້າງเมื่อ",
-        updated: "อัปเดตเมื่อ",
+        updated: "ອັບເດດເມື່ອ",
         current_image: "ຮູບພາບປັດຈຸບັນ",
+      },
+      notifications: {
+        create_success: "ສ້າງບລັອກສຳເລັດ",
+        update_success: "ອັບເດດບລັອກສຳເລັດ",
       },
     },
     upload_image: "ອັບໂຫລດຮູບພາບ",

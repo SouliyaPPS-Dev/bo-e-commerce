@@ -1,22 +1,26 @@
-import { Divider } from '@mui/material';
-import { lazy, useEffect } from 'react';
+import { Divider } from "@mui/material";
+import { lazy, useEffect } from "react";
 import {
   Create,
   required,
   SimpleForm,
   TextInput,
+  useNotify,
+  useRedirect,
   useTranslate,
-} from 'react-admin';
-import { uploadImageToCloudinary } from '../utils/cloudinaryUpload';
-import ImageInputWithPreview from '../components/ImageInputWithPreview';
-import { useImageStore } from '../store/imageStore';
+} from "react-admin";
+import { uploadImageToCloudinary } from "../utils/cloudinaryUpload";
+import ImageInputWithPreview from "../components/ImageInputWithPreview";
+import { useImageStore } from "../store/imageStore";
 
 const RichTextInput = lazy(() =>
-  import('ra-input-rich-text').then((m) => ({ default: m.RichTextInput }))
+  import("ra-input-rich-text").then((m) => ({ default: m.RichTextInput })),
 );
 
 export const BlogCreate = () => {
   const translate = useTranslate();
+  const notify = useNotify();
+  const redirect = useRedirect();
   const { setSelectImage } = useImageStore();
 
   useEffect(() => {
@@ -26,27 +30,33 @@ export const BlogCreate = () => {
 
   return (
     <Create
-      mutationMode='pessimistic'
+      mutationMode="pessimistic"
       mutationOptions={{
         onSuccess: () => {
           // Clear the image store after successful creation
           setSelectImage(null);
+          // Show success notification
+          notify("resources.blogs.notifications.create_success", {
+            type: "success",
+          });
+          // Redirect to blogs list
+          redirect("/blogs");
         },
       }}
     >
       <SimpleForm>
         <TextInput
-          source='title'
+          source="title"
           validate={[required()]}
           fullWidth
-          label={translate('resources.blogs.fields.title')}
+          label={translate("resources.blogs.fields.title")}
         />
 
         <Divider sx={{ my: 0.2 }} />
 
         <ImageInputWithPreview
-          source='image'
-          label={translate('resources.blogs.fields.image')}
+          source="image"
+          label={translate("resources.blogs.fields.image")}
           onImageSelect={() => {
             // This will be called when image is selected
           }}
@@ -54,22 +64,22 @@ export const BlogCreate = () => {
 
         <Divider sx={{ my: 0.2 }} />
 
-        <div style={{ alignItems: 'center', gap: 8 }}>
+        <div style={{ alignItems: "center", gap: 8 }}>
           <div
             style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
               gap: 8,
             }}
           >
             <button
-              type='button'
+              type="button"
               onClick={async (e) => {
                 e.preventDefault();
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = 'image/*';
+                const input = document.createElement("input");
+                input.type = "file";
+                input.accept = "image/*";
                 input.onchange = async () => {
                   if (input.files && input.files[0]) {
                     try {
@@ -77,16 +87,16 @@ export const BlogCreate = () => {
                       // Copy image URL to clipboard
                       await navigator.clipboard.writeText(url);
                       // Show alert notification
-                      alert(translate('upload_image_success'));
+                      alert(translate("upload_image_success"));
                       // Find the contenteditable div of RichTextInput
                       const rte = document.querySelector(
-                        '[contenteditable="true"][role="textbox"]'
+                        '[contenteditable="true"][role="textbox"]',
                       );
                       if (rte) {
                         // Insert image at the caret position
-                        const img = document.createElement('img');
+                        const img = document.createElement("img");
                         img.src = url;
-                        img.alt = 'uploaded image';
+                        img.alt = "uploaded image";
                         // Insert image at caret
                         const sel = window.getSelection();
                         if (sel && sel.rangeCount > 0) {
@@ -103,11 +113,11 @@ export const BlogCreate = () => {
                         }
                         // Trigger input event to update form value
                         rte.dispatchEvent(
-                          new Event('input', { bubbles: true })
+                          new Event("input", { bubbles: true }),
                         );
                       }
                     } catch (err) {
-                      alert(translate('upload_image_failure'));
+                      alert(translate("upload_image_failure"));
                     }
                   }
                 };
@@ -115,31 +125,31 @@ export const BlogCreate = () => {
               }}
               style={{
                 marginRight: 8,
-                cursor: 'pointer',
-                padding: '8px 16px',
-                backgroundColor: '#3f51b5',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '4px',
-                fontFamily: 'inherit',
+                cursor: "pointer",
+                padding: "8px 16px",
+                backgroundColor: "#3f51b5",
+                color: "#fff",
+                border: "none",
+                borderRadius: "4px",
+                fontFamily: "inherit",
               }}
             >
-              {translate('upload_image')}
+              {translate("upload_image")}
             </button>
           </div>
           <RichTextInput
-            source='description'
+            source="description"
             validate={[required()]}
             fullWidth
-            label={translate('resources.blogs.fields.description')}
+            label={translate("resources.blogs.fields.description")}
           />
         </div>
 
         <Divider sx={{ my: 0.2 }} />
 
         <RichTextInput
-          source='description_la'
-          label={translate('resources.blogs.fields.description_la')}
+          source="description_la"
+          label={translate("resources.blogs.fields.description_la")}
           fullWidth
         />
 

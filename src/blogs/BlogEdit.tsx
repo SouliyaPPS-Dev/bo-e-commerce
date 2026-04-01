@@ -1,4 +1,4 @@
-import { lazy, useEffect } from 'react';
+import { lazy, useEffect } from "react";
 import {
   DeleteButton,
   Edit,
@@ -12,17 +12,19 @@ import {
   DeleteWithConfirmButton,
   TextInput,
   TopToolbar,
+  useNotify,
+  useRedirect,
   useRefresh,
   useTranslate,
-} from 'react-admin';
-import { useImageStore } from '../store/imageStore';
-import { useLocation } from 'react-router';
-import { uploadImageToCloudinary } from '../utils/cloudinaryUpload';
-import { Divider } from '@mui/material';
-import ImageInputWithPreview from '../components/ImageInputWithPreview';
+} from "react-admin";
+import { useImageStore } from "../store/imageStore";
+import { useLocation } from "react-router";
+import { uploadImageToCloudinary } from "../utils/cloudinaryUpload";
+import { Divider } from "@mui/material";
+import ImageInputWithPreview from "../components/ImageInputWithPreview";
 
 const RichTextInput = lazy(() =>
-  import('ra-input-rich-text').then((m) => ({ default: m.RichTextInput }))
+  import("ra-input-rich-text").then((m) => ({ default: m.RichTextInput })),
 );
 
 const BlogEditActions = () => (
@@ -35,6 +37,8 @@ export const BlogEdit = () => {
   const { selectImage, setSelectImage } = useImageStore(); // Use the store
   const refresh = useRefresh();
   const translate = useTranslate();
+  const notify = useNotify();
+  const redirect = useRedirect();
 
   // Clear selectImage when route changes
   const location = useLocation();
@@ -44,16 +48,32 @@ export const BlogEdit = () => {
   }, [location.pathname, setSelectImage]);
 
   return (
-    <Edit actions={<BlogEditActions />}>
+    <Edit
+      actions={<BlogEditActions />}
+      mutationMode="pessimistic"
+      mutationOptions={{
+        onSuccess: () => {
+          notify("resources.blogs.notifications.update_success", {
+            type: "success",
+          });
+          redirect("/blogs");
+        },
+      }}
+    >
       <SimpleForm toolbar={<BlogEditFormToolbar />}>
         {/* <TextField source='id' /> */}
-        <TextInput source='title' validate={[required()]} fullWidth label={translate('resources.blogs.fields.title')} />
+        <TextInput
+          source="title"
+          validate={[required()]}
+          fullWidth
+          label={translate("resources.blogs.fields.title")}
+        />
 
         <Divider sx={{ my: 0.2 }} />
 
         <ImageInputWithPreview
-          source='image'
-          label={translate('resources.blogs.fields.image')}
+          source="image"
+          label={translate("resources.blogs.fields.image")}
           onImageSelect={() => {
             // This will be called when image is selected
           }}
@@ -61,22 +81,22 @@ export const BlogEdit = () => {
 
         <Divider sx={{ my: 0.2 }} />
 
-        <div style={{ alignItems: 'center', gap: 8 }}>
+        <div style={{ alignItems: "center", gap: 8 }}>
           <div
             style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
               gap: 8,
             }}
           >
             <button
-              type='button'
+              type="button"
               onClick={async (e) => {
                 e.preventDefault();
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = 'image/*';
+                const input = document.createElement("input");
+                input.type = "file";
+                input.accept = "image/*";
                 input.onchange = async () => {
                   if (input.files && input.files[0]) {
                     try {
@@ -84,16 +104,16 @@ export const BlogEdit = () => {
                       // Copy image URL to clipboard
                       await navigator.clipboard.writeText(url);
                       // Show alert notification
-                      alert(translate('upload_image_success'));
+                      alert(translate("upload_image_success"));
                       // Find the contenteditable div of RichTextInput
                       const rte = document.querySelector(
-                        '[contenteditable="true"][role="textbox"]'
+                        '[contenteditable="true"][role="textbox"]',
                       );
                       if (rte) {
                         // Insert image at the caret position
-                        const img = document.createElement('img');
+                        const img = document.createElement("img");
                         img.src = url;
-                        img.alt = 'uploaded image';
+                        img.alt = "uploaded image";
                         // Insert image at caret
                         const sel = window.getSelection();
                         if (sel && sel.rangeCount > 0) {
@@ -110,11 +130,11 @@ export const BlogEdit = () => {
                         }
                         // Trigger input event to update form value
                         rte.dispatchEvent(
-                          new Event('input', { bubbles: true })
+                          new Event("input", { bubbles: true }),
                         );
                       }
                     } catch (err) {
-                      alert(translate('upload_image_failure'));
+                      alert(translate("upload_image_failure"));
                     }
                   }
                 };
@@ -122,19 +142,19 @@ export const BlogEdit = () => {
               }}
               style={{
                 marginRight: 8,
-                cursor: 'pointer',
-                padding: '8px 16px',
-                backgroundColor: '#3f51b5',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '4px',
+                cursor: "pointer",
+                padding: "8px 16px",
+                backgroundColor: "#3f51b5",
+                color: "#fff",
+                border: "none",
+                borderRadius: "4px",
               }}
             >
-              {translate('upload_image')}
+              {translate("upload_image")}
             </button>
           </div>
           <RichTextInput
-            source='description'
+            source="description"
             validate={[required()]}
             fullWidth
           />
@@ -143,24 +163,27 @@ export const BlogEdit = () => {
         <Divider sx={{ my: 0.2 }} />
 
         <RichTextInput
-          source='description_la'
-          label={translate('resources.blogs.fields.description_la')}
+          source="description_la"
+          label={translate("resources.blogs.fields.description_la")}
           fullWidth
         />
 
-        <NumberInput source='count' label={translate('resources.blogs.fields.count')} />
+        <NumberInput
+          source="count"
+          label={translate("resources.blogs.fields.count")}
+        />
         {/* <TextInput source='video_url' fullWidth /> */}
         {/* <DateField source='created' /> */}
         {/* <DateField source='updated' /> */}
 
-        <h3>{translate('preview')}</h3>
+        <h3>{translate("preview")}</h3>
         <FormDataConsumer>
           {({ formData }) => (
             <div
               style={{
                 marginTop: 2,
                 padding: 16,
-                border: '1px solid #ccc',
+                border: "1px solid #ccc",
                 borderRadius: 8,
               }}
             >
@@ -168,13 +191,13 @@ export const BlogEdit = () => {
               {formData.image_url && (
                 <img
                   src={formData.image_url}
-                  alt={formData.title || 'Blog preview'}
-                  loading='lazy'
-                  decoding='async'
+                  alt={formData.title || "Blog preview"}
+                  loading="lazy"
+                  decoding="async"
                   style={{
                     marginTop: 16,
-                    maxWidth: '100%',
-                    height: 'auto',
+                    maxWidth: "100%",
+                    height: "auto",
                     borderRadius: 8,
                   }}
                 />
@@ -191,13 +214,13 @@ export const BlogEdit = () => {
 const BlogEditFormToolbar = () => {
   const translate = useTranslate();
   return (
-    <Toolbar sx={{ display: 'flex' }}>
+    <Toolbar sx={{ display: "flex" }}>
       <SaveButton />
-      <span style={{ marginLeft: 'auto' }}>
+      <span style={{ marginLeft: "auto" }}>
         <DeleteWithConfirmButton
-          confirmTitle={translate('confirm_delete')}
-          confirmContent={translate('confirm_delete_message')}
-          mutationMode='pessimistic'
+          confirmTitle={translate("confirm_delete")}
+          confirmContent={translate("confirm_delete_message")}
+          mutationMode="pessimistic"
         />
       </span>
     </Toolbar>
